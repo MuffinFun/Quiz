@@ -1,0 +1,107 @@
+.container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background-color: rgb(232, 138, 234);
+}
+
+.start-menu {
+  position: absolute;
+  background: linear-gradient(
+    316deg,
+    rgba(36, 5, 38, 1) 0%,
+    rgba(82, 9, 91, 1) 16%,
+    rgba(138, 14, 157, 1) 79%,
+    rgba(163, 18, 185, 1) 90%
+  );
+  border-radius: 30px 45px 100px 30px;
+  box-shadow: 11px 15px 24px 1px rgba(45, 9, 41, 0.54);
+  width: 400px;
+  height: 400px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -300%);
+  z-index: 5;
+  transition: 450ms;
+  padding: 10px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+.start-menu__text {
+  text-align: center;
+  text-transform: uppercase;
+  font-family: sans-serif;
+  color: rgb(255, 255, 255);
+}
+.start-menu__text h1 {
+  font-size: 50px;
+  transform: translateX(-15%);
+  margin-bottom: 25px;
+}
+.start-menu__text p {
+  font-size: 17px;
+  text-align: left;
+  margin-bottom: 10px;
+}
+.start-menu__buttons {
+  padding-bottom: 30px;
+}
+
+.start-button {
+  position: absolute;
+  border: none;
+  padding: 40px 50px;
+  background: linear-gradient(
+    74deg,
+    rgba(187, 18, 193, 1) 9%,
+    rgba(187, 18, 193, 1) 46%,
+    rgba(103, 10, 122, 1) 77%,
+    rgba(65, 6, 90, 1) 87%,
+    rgba(0, 12, 36, 1) 99%
+  );
+  border-radius: 15px 60px 20px 10px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: -8px 12px 24px 1px rgba(45, 9, 41, 0.54);
+  transition: 420ms;
+}
+button span {
+  color: rgb(255, 255, 255);
+  font-size: 50px;
+  font-family: sans-serif;
+  text-transform: uppercase;
+}
+.continue-button {
+  padding: 10px 15px;
+  background: linear-gradient(
+    316deg,
+    rgba(77, 10, 66, 1) 0%,
+    rgba(120, 14, 93, 1) 1%,
+    rgba(190, 16, 118, 1) 40%,
+    rgba(221, 18, 138, 1) 90%
+  );
+  border: none;
+  border-radius: 15px 5px 15px 15px;
+  margin-right: 25px;
+}
+.exit-button {
+  padding: 10px 15px;
+  background: linear-gradient(
+    316deg,
+    rgba(77, 10, 66, 1) 0%,
+    rgba(120, 14, 93, 1) 1%,
+    rgba(190, 16, 118, 1) 40%,
+    rgba(221, 18, 138, 1) 90%
+  );
+  border: none;
+  border-radius: 15px 5px 15px 15px;
+}
+.continue-button span {
+  font-size: 20px;
+}
+.exit-button span {
+  font-size: 20px;
+}

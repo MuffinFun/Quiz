@@ -66,7 +66,7 @@ class Quiz {
   //       </section>
   //   `
   //   );
-  }
+  //}
   checkCorrectAnswer(answer) {
     return answer === this.correctAnswer ? true : false;
   }

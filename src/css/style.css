@@ -16,8 +16,8 @@
   );
   border-radius: 30px 45px 100px 30px;
   box-shadow: 11px 15px 24px 1px rgba(45, 9, 41, 0.54);
-  width: 400px;
-  height: 400px;
+  width: 500px;
+  height: 500px;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -300%);
@@ -31,13 +31,13 @@
 }
 .start-menu__text {
   text-align: center;
+  width: 100%;
   text-transform: uppercase;
   font-family: sans-serif;
   color: rgb(255, 255, 255);
 }
 .start-menu__text h1 {
-  font-size: 50px;
-  transform: translateX(-15%);
+  font-size: 25px;
   margin-bottom: 25px;
 }
 .start-menu__text p {
@@ -47,6 +47,7 @@
 }
 .start-menu__buttons {
   padding-bottom: 30px;
+  transition: 1s;
 }
 
 .start-button {
@@ -86,6 +87,7 @@ button span {
   border: none;
   border-radius: 15px 5px 15px 15px;
   margin-right: 25px;
+  display: none;
 }
 .exit-button {
   padding: 10px 15px;

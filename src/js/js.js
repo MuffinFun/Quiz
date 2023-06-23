@@ -18,3 +18,6 @@ exitBtn.addEventListener("click", () => {
   startBtn.style.transition = "550ms";
   startMenu.style.transform = "translate(-50%, -300%)";
 });
+
+const tag = document.querySelector(".star-menu__text p");
+console.log(tag);

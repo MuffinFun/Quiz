@@ -40,16 +40,11 @@
   font-size: 25px;
   margin-bottom: 25px;
 }
-.start-menu__text p {
-  font-size: 17px;
-  text-align: left;
-  margin-bottom: 10px;
-}
+
 .start-menu__buttons {
   padding-bottom: 30px;
   transition: 1s;
 }
-
 .start-button {
   position: absolute;
   border: none;
@@ -106,4 +101,15 @@ button span {
 }
 .exit-button span {
   font-size: 20px;
+}
+.btn__answer {
+  width: 100%;
+  padding: 15px 0;
+  margin-bottom: 20px;
+}
+
+.answers-box {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }

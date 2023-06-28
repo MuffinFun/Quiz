@@ -38,12 +38,12 @@ contBtn.addEventListener("click", () => {
     yourCount.textContent = count;
     totalCount.textContent = listOfQuestions.length;
     startMenu.style.cssText = `
-    transition: 375ms;
+    transition: 775ms;
     opacity: 1
     transform: translate(-50%, -800%);
   `;
     endMenu.style.cssText = `
-    transition: 570ms;
+    transition: 775ms;
     transform: translate(-50%, -50%);
     `;
     document.querySelector(`section[id='active']`).remove();
@@ -53,7 +53,7 @@ contBtn.addEventListener("click", () => {
 
 concedeBtn.addEventListener("click", () => {
   startMenu.style.cssText = `
-    transition: 375ms;
+    transition: 775ms;
     opacity: 0;
     transform: translate(-50%, -700%);
   `;
@@ -99,15 +99,18 @@ class Quiz {
       "afterbegin",
       `
         <section class="start-menu__text" id="active">
-          <h1>${this.question}? ${this.number} of ${this.total}</h1>
-          <div class="answers-box"></div>
+          <h1>${this.question}?</h1>
+          <div class="start-menu__curr-of-total">${this.number} of ${this.total}</div>
+          <div class="answers-box">
           <button class="btn-answer">${this.answers[0]}</button>
           <button class="btn-answer">${this.answers[1]}</button>
           <button class="btn-answer">${this.answers[2]}</button>
           <button class="btn-answer">${this.answers[3]}</button>
+          </div>
         </section>
     `
     );
+    startMenu.insertAdjacentHTML("beforebegin", "");
     correctAns = this.correctAnswer[0];
     corrSevAns = this.correctAnswer;
     currentQue = this.number;

@@ -61,6 +61,9 @@ concedeBtn.addEventListener("click", () => {
     opacity: 1;
     transition: 650ms;
   `;
+  noteBox.style.cssText = `
+    opacity: 0;
+  `;
   document.querySelector(`section[id='active']`).remove();
   checkUnCorr = 0;
   count = 0;

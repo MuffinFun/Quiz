@@ -11,7 +11,6 @@ let ansBtn;
 let correctAns;
 let currentQue;
 let index = 0;
-//let getAnswer = document.querySelector('p[name="answer"]');
 
 startBtn.addEventListener("click", () => {
   startBtn.style.opacity = "0";
@@ -20,7 +19,7 @@ startBtn.addEventListener("click", () => {
 });
 
 contBtn.addEventListener("click", () => {
-  if (!(currentQue == 3)) {
+  if (!(currentQue == listOfQuestions.length)) {
     document.querySelector(`section[id='active']`).remove();
     showQuestions(++index);
     contBtn.style.display = "none";

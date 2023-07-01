@@ -21,9 +21,9 @@
   min-height: 445px;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -1000%);
+  transform: translate(-50%, -400%);
   z-index: 5;
-  transition: 325ms;
+  transition: 525ms;
   padding: 15px 10px 20px 10px;
   display: flex;
   flex-direction: column;
@@ -70,6 +70,7 @@
   width: 450px;
   height: 125px;
   padding: 15px 10px;
+  transition: 575ms;
 }
 .end-menu h2 {
   font-size: 25px;
@@ -146,6 +147,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   box-shadow: 17px 2px 42px -3px rgba(4, 12, 19, 0.87);
+  cursor: pointer;
   transition: 420ms;
 }
 button span {
@@ -165,6 +167,7 @@ button span {
   );
   border: none;
   border-radius: 15px 5px 15px 15px;
+  cursor: pointer;
   display: none;
 }
 .continue-button span {
@@ -181,6 +184,7 @@ button span {
   );
   border: none;
   border-radius: 15px 5px 15px 15px;
+  cursor: pointer;
 }
 .concede-button span {
   font-size: 20px;
@@ -197,6 +201,7 @@ button span {
   );
   border: none;
   border-radius: 15px 5px 15px 15px;
+  cursor: pointer;
 }
 .exit-button span {
   font-size: 20px;
@@ -207,12 +212,13 @@ button span {
   width: 100%;
   padding: 15px 7px;
   margin-bottom: 13px;
+  cursor: pointer;
 }
 .btn-answer:last-child {
   border-bottom-right-radius: 50px;
 }
 
-.ok-btn {
+.ok-button {
   background: linear-gradient(
     316deg,
     rgba(77, 10, 66, 1) 0%,
@@ -224,12 +230,31 @@ button span {
   border-radius: 5px;
   color: white;
   font-family: sans-serif;
+  cursor: pointer;
 }
 
 .answers-box {
   width: 100%;
   display: flex;
   flex-direction: column;
+}
+
+.start-button_deactivate {
+  opacity: 0;
+}
+.start-menu_show-menu {
+  opacity: 1;
+  transform: translate(-50%, -50%);
+}
+.end-menu_show-menu {
+  transition: 570ms;
+  transform: translate(-50%, -50%);
+}
+.note-box_show {
+  opacity: 1;
+}
+.continue-button_show {
+  display: inline;
 }
 
 @media (max-width: 780px) {

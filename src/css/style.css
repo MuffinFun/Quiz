@@ -256,6 +256,20 @@ button span {
 .continue-button_show {
   display: inline;
 }
+.green-correct-answer {
+  background-color: green;
+  pointer-events: none;
+}
+.red-uncorrect-answer {
+  background-color: red;
+}
+.disable-button {
+  pointer-events: none;
+}
+.disable-button_correct {
+  background-color: gray;
+  pointer-events: none;
+}
 
 @media (max-width: 780px) {
   .start-menu__buttons {

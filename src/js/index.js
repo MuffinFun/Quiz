@@ -9,84 +9,60 @@ const yourCount = document.querySelector(".end-menu__count");
 const totalCount = document.querySelector(".end-menu__total");
 const exitBtn = document.querySelector(".exit-button");
 const noteBox = document.querySelector(".note-box");
-const okBtn = document.querySelector(".ok-btn");
+const okBtn = document.querySelector(".ok-button");
 
-let ansBtn;
+let answerButton;
+
 let correctAns;
 let corrSevAns;
 let currentQue;
-let checkUnCorr = 0;
+
+let chooseWrngAns = 0;
 let count = 0;
 let index = 0;
 
 startBtn.addEventListener("click", () => {
-  startBtn.style.opacity = "0";
-  startMenu.style.cssText = `
-  opacity: 1;
-  transform: translate(-50%, -50%)
-  `;
+  startBtn.classList.toggle("start-button_deactivate");
+  startMenu.classList.toggle("start-menu_show-menu");
   showQuestions(index);
 });
 
 contBtn.addEventListener("click", () => {
-  checkUnCorr = 0;
+  chooseWrngAns = 0;
   if (!(currentQue == listOfQuestions.length)) {
     document.querySelector(`section[id='active']`).remove();
     showQuestions(++index);
-    contBtn.style.display = "none";
+    contBtn.classList.toggle("continue-button_show");
   } else {
     yourCount.textContent = count;
     totalCount.textContent = listOfQuestions.length;
-    startMenu.style.cssText = `
-    transition: 375ms;
-    opacity: 1
-    transform: translate(-50%, -800%);
-  `;
-    endMenu.style.cssText = `
-    transition: 570ms;
-    transform: translate(-50%, -50%);
-    `;
+    startMenu.classList.toggle("start-menu_show-menu");
+    endMenu.classList.toggle("end-menu_show-menu");
     document.querySelector(`section[id='active']`).remove();
     index = 0;
   }
 });
 
 concedeBtn.addEventListener("click", () => {
-  startMenu.style.cssText = `
-    transition: 375ms;
-    opacity: 0;
-    transform: translate(-50%, -700%);
-  `;
-  startBtn.style.cssText = `
-    opacity: 1;
-    transition: 650ms;
-  `;
-  noteBox.style.cssText = `
-    opacity: 0;
-  `;
+  startMenu.classList.toggle("start-menu_show-menu");
+  startBtn.classList.toggle("start-button_deactivate");
+  noteBox.classList.remove("note-box_show");
+  contBtn.classList.remove("continue-button_show");
   document.querySelector(`section[id='active']`).remove();
-  checkUnCorr = 0;
+  chooseWrngAns = 0;
   count = 0;
   index = 0;
 });
 
 exitBtn.addEventListener("click", () => {
   count = 0;
-  endMenu.style.cssText = `
-    transition: 575ms;
-    transform: translate(-350%, -50%);
-  `;
-  startBtn.style.cssText = `
-    opacity: 1;
-    transition: 650ms;
-  `;
-  contBtn.style.display = "none";
+  endMenu.classList.toggle("end-menu_show-menu");
+  startBtn.classList.toggle("start-button_deactivate");
+  contBtn.classList.toggle("continue-button_show");
 });
 
 okBtn.addEventListener("click", () => {
-  noteBox.style.cssText = `
-    opacity: 0;
-  `;
+  noteBox.classList.toggle("note-box_show");
 });
 
 class Quiz {
@@ -120,17 +96,21 @@ class Quiz {
 function getProp(check) {
   let answered = false;
   let tempArr = [];
-  ansBtn = document.querySelectorAll(".btn-answer");
-  ansBtn.forEach((item) => {
+  answerButton = document.querySelectorAll(".btn-answer");
+  answerButton.forEach((item) => {
     item.addEventListener("click", () => {
       if (check == 0) {
-        if (item.textContent === correctAns && checkUnCorr == 0 && !answered) {
+        if (
+          item.textContent === correctAns &&
+          chooseWrngAns == 0 &&
+          !answered
+        ) {
           answered = true;
           count++;
-          contBtn.style.display = "inline";
+          contBtn.classList.add("continue-button_show");
           item.style.background = "#05b305cf";
         } else if (
-          checkUnCorr != 0 &&
+          chooseWrngAns != 0 &&
           item.textContent === correctAns &&
           !answered
         ) {
@@ -139,20 +119,20 @@ function getProp(check) {
           item.style.background = "#05b305cf";
         } else {
           item.style.background = "#b10d0d";
-          checkUnCorr = 1;
-          contBtn.style.display = "inline";
+          chooseWrngAns = 1;
+          contBtn.classList.add("continue-button_show");
         }
       } else {
         if (
           corrSevAns.includes(item.textContent) &&
-          checkUnCorr == 0 &&
+          chooseWrngAns == 0 &&
           !tempArr.includes(item.textContent)
         ) {
           tempArr.push(item.textContent);
           item.style.background = "#05b305cf";
           if (tempArr.length == corrSevAns.length) {
             count++;
-            contBtn.style.display = "inline";
+            contBtn.classList.add("continue-button_show");
           }
           console.log(tempArr);
         } else if (
@@ -161,12 +141,15 @@ function getProp(check) {
           tempArr.length == corrSevAns.length
         ) {
           item.style.background = "#05b305cf";
-        } else if (corrSevAns.includes(item.textContent) && checkUnCorr != 0) {
+        } else if (
+          corrSevAns.includes(item.textContent) &&
+          chooseWrngAns != 0
+        ) {
           item.style.background = "#997c7cd1";
         } else if (!corrSevAns.includes(item.textContent)) {
           item.style.background = "#b10d0d";
-          contBtn.style.display = "inline";
-          checkUnCorr = 1;
+          contBtn.classList.add("continue-button_show");
+          chooseWrngAns = 1;
         }
       }
     });
@@ -182,14 +165,10 @@ function showQuestions(index) {
     listOfQuestions.length
   ).showQuest();
   if (listOfQuestions[index].several == 1) {
-    noteBox.style.cssText = `
-    opacity: 1;
-  `;
+    noteBox.classList.add("note-box_show");
     getProp(1);
   } else {
-    noteBox.style.cssText = `
-    opacity: 0;
-  `;
+    noteBox.classList.remove("note-box_show");
     getProp(0);
   }
 }

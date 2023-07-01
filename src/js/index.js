@@ -96,32 +96,27 @@ class Quiz {
 }
 
 function getProp(check) {
-  let answered = false;
   let tempArr = [];
   answerButton = document.querySelectorAll(".btn-answer");
   answerButton.forEach((item) => {
     item.addEventListener("click", () => {
       if (check == 0) {
-        if (
-          item.textContent === correctAns &&
-          chooseWrngAns == 0 &&
-          !answered
-        ) {
-          answered = true;
+        if (item.textContent === correctAns) {
           count++;
+          item.classList.add("green-correct-answer");
+          answerButton.forEach((item) => {
+            item.classList.add("disable-button");
+          });
           contBtn.classList.add("continue-button_show");
-          item.style.background = "#05b305cf";
-        } else if (
-          chooseWrngAns != 0 &&
-          item.textContent === correctAns &&
-          !answered
-        ) {
-          item.style.background = "#997c7cd1";
-        } else if (answered && item.textContent === correctAns) {
-          item.style.background = "#05b305cf";
         } else {
-          item.style.background = "#b10d0d";
-          chooseWrngAns = 1;
+          item.classList.add("red-uncorrect-answer");
+          answerButton.forEach((item) => {
+            if (correctAns === item.textContent) {
+              item.classList.add("disable-button_correct");
+            } else {
+              item.classList.add("disable-button");
+            }
+          });
           contBtn.classList.add("continue-button_show");
         }
       } else {
@@ -131,27 +126,24 @@ function getProp(check) {
           !tempArr.includes(item.textContent)
         ) {
           tempArr.push(item.textContent);
-          item.style.background = "#05b305cf";
+          item.classList.add("green-correct-answer");
           if (tempArr.length == corrSevAns.length) {
             count++;
-            contBtn.classList.add("continue-button_show");
+            answerButton.forEach((item) => {
+              item.classList.add("disable-button");
+            });
           }
-          console.log(tempArr);
-        } else if (
-          corrSevAns.includes(item.textContent) &&
-          tempArr.includes(item.textContent) &&
-          tempArr.length == corrSevAns.length
-        ) {
-          item.style.background = "#05b305cf";
-        } else if (
-          corrSevAns.includes(item.textContent) &&
-          chooseWrngAns != 0
-        ) {
-          item.style.background = "#997c7cd1";
-        } else if (!corrSevAns.includes(item.textContent)) {
-          item.style.background = "#b10d0d";
           contBtn.classList.add("continue-button_show");
-          chooseWrngAns = 1;
+        } else {
+          item.classList.add("red-uncorrect-answer");
+          answerButton.forEach((item) => {
+            if (corrSevAns.includes(item.textContent)) {
+              item.classList.add("disable-button_correct");
+            } else {
+              item.classList.add("disable-button");
+            }
+          });
+          contBtn.classList.add("continue-button_show");
         }
       }
     });
@@ -253,8 +245,8 @@ const listOfQuestions = [
     several: 1,
     number: 9,
     question: "Which digit is less than 5?",
-    correctAnswer: ["1", "0", "2", "4"],
-    answers: ["1", "0", "2", "4"],
+    correctAnswer: ["1", "2", "4"],
+    answers: ["1", "10", "2", "4"],
   },
   {
     several: 0,

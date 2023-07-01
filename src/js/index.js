@@ -78,12 +78,14 @@ class Quiz {
       "afterbegin",
       `
         <section class="start-menu__text" id="active">
-          <h1>${this.question}? ${this.number} of ${this.total}</h1>
-          <div class="answers-box"></div>
+          <h1>${this.question}?</h1>
+          <div class="start-menu__curr-of-total">${this.number} of ${this.total}</div>
+          <div class="answers-box">
           <button class="btn-answer">${this.answers[0]}</button>
           <button class="btn-answer">${this.answers[1]}</button>
           <button class="btn-answer">${this.answers[2]}</button>
           <button class="btn-answer">${this.answers[3]}</button>
+          </div>
         </section>
     `
     );

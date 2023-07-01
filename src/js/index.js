@@ -28,6 +28,7 @@ startBtn.addEventListener("click", () => {
 });
 
 contBtn.addEventListener("click", () => {
+  console.log("your count: " + count);
   chooseWrngAns = 0;
   if (!(currentQue == listOfQuestions.length)) {
     document.querySelector(`section[id='active']`).remove();
@@ -129,13 +130,11 @@ function getProp(check) {
           item.classList.add("green-correct-answer");
           if (tempArr.length == corrSevAns.length) {
             count++;
-            answerButton.forEach((item) => {
-              item.classList.add("disable-button");
-            });
           }
           contBtn.classList.add("continue-button_show");
         } else {
           item.classList.add("red-uncorrect-answer");
+          if(tempArr.length == corrSevAns.length) count--;
           answerButton.forEach((item) => {
             if (corrSevAns.includes(item.textContent)) {
               item.classList.add("disable-button_correct");

@@ -15,9 +15,8 @@ let answerButton;
 
 let correctAns;
 let corrSevAns;
-let currentQue;
+let currentQuestion;
 
-let chooseWrngAns = 0;
 let count = 0;
 let index = 0;
 
@@ -28,8 +27,7 @@ startBtn.addEventListener("click", () => {
 });
 
 contBtn.addEventListener("click", () => {
-  chooseWrngAns = 0;
-  if (!(currentQue == listOfQuestions.length)) {
+  if (!(currentQuestion == listOfQuestions.length)) {
     document.querySelector(`section[id='active']`).remove();
     showQuestions(++index);
     contBtn.classList.toggle("continue-button_show");
@@ -49,7 +47,6 @@ concedeBtn.addEventListener("click", () => {
   noteBox.classList.remove("note-box_show");
   contBtn.classList.remove("continue-button_show");
   document.querySelector(`section[id='active']`).remove();
-  chooseWrngAns = 0;
   count = 0;
   index = 0;
 });
@@ -66,12 +63,11 @@ okBtn.addEventListener("click", () => {
 });
 
 class Quiz {
-  constructor(number, question, correctAnswer, answers, total) {
+  constructor(number, question, correctAnswer, answers) {
     this.number = number;
     this.question = question;
     this.correctAnswer = correctAnswer;
     this.answers = answers;
-    this.total = total;
   }
   showQuest() {
     startMenu.insertAdjacentHTML(
@@ -79,7 +75,7 @@ class Quiz {
       `
         <section class="start-menu__text" id="active">
           <h1>${this.question}?</h1>
-          <div class="start-menu__curr-of-total">${this.number} of ${this.total}</div>
+          <div class="start-menu__curr-of-total">${this.number} of ${listOfQuestions.length}</div>
           <div class="answers-box">
           <button class="btn-answer">${this.answers[0]}</button>
           <button class="btn-answer">${this.answers[1]}</button>
@@ -91,7 +87,7 @@ class Quiz {
     );
     correctAns = this.correctAnswer[0];
     corrSevAns = this.correctAnswer;
-    currentQue = this.number;
+    currentQuestion = this.number;
   }
 }
 
@@ -122,20 +118,17 @@ function getProp(check) {
       } else {
         if (
           corrSevAns.includes(item.textContent) &&
-          chooseWrngAns == 0 &&
           !tempArr.includes(item.textContent)
         ) {
           tempArr.push(item.textContent);
           item.classList.add("green-correct-answer");
           if (tempArr.length == corrSevAns.length) {
             count++;
-            answerButton.forEach((item) => {
-              item.classList.add("disable-button");
-            });
           }
           contBtn.classList.add("continue-button_show");
         } else {
           item.classList.add("red-uncorrect-answer");
+          if (tempArr.length == corrSevAns.length) count--;
           answerButton.forEach((item) => {
             if (corrSevAns.includes(item.textContent)) {
               item.classList.add("disable-button_correct");
@@ -155,8 +148,7 @@ function showQuestions(index) {
     listOfQuestions[index].number,
     listOfQuestions[index].question,
     listOfQuestions[index].correctAnswer,
-    listOfQuestions[index].answers,
-    listOfQuestions.length
+    listOfQuestions[index].answers
   ).showQuest();
   if (listOfQuestions[index].several == 1) {
     noteBox.classList.add("note-box_show");

@@ -1,8 +1,30 @@
+:root {
+  --color-container-background: rgb(232, 138, 234);
+  --color-count-sky: rgb(10, 235, 198);
+  --color-total-lightGreen: rgb(10, 235, 10);
+  --color-text: rgb(255, 255, 255);
+  --color-correct-answer: rgb(0, 128, 0);
+  --color-uncorrect-answer: rgb(255, 0, 0);
+  --color-show-correct-answer: rgb(128, 128, 128);
+}
+
+h1,
+h2,
+h3 {
+  color: var(--color-text);
+}
+p {
+  color: var(--color-text);
+}
+span {
+  color: var(--color-text);
+}
+
 .container {
   position: relative;
   width: 100%;
   height: 100vh;
-  background-color: rgb(232, 138, 234);
+  background-color: var(--color-container-background);
   overflow: hidden;
 }
 
@@ -35,7 +57,6 @@
   width: 100%;
   text-transform: uppercase;
   font-family: sans-serif;
-  color: rgb(255, 255, 255);
 }
 .start-menu__text h1 {
   font-size: 23px;
@@ -47,7 +68,7 @@
   width: 75%;
 }
 .start-menu__curr-of-total {
-  color: white;
+  color: var(--color-text);
   font-size: 20px;
   font-family: sans-serif;
   margin-bottom: 15px;
@@ -75,7 +96,6 @@
 .end-menu h2 {
   font-size: 25px;
   text-align: center;
-  color: white;
   font-family: sans-serif;
   text-transform: uppercase;
   margin-bottom: 25px;
@@ -83,16 +103,15 @@
 .end-menu p {
   font-size: 18px;
   text-align: center;
-  color: white;
   font-family: sans-serif;
   text-transform: uppercase;
   margin-bottom: 15px;
 }
 .end-menu__count {
-  color: rgb(10, 235, 198);
+  color: var(--color-count-sky);
 }
 .end-menu__total {
-  color: rgb(10, 235, 10);
+  color: var(--color-total-lightGreen);
 }
 
 .note-box {
@@ -117,7 +136,6 @@
 .note-box h3 {
   font-size: 18px;
   text-align: center;
-  color: white;
   font-family: sans-serif;
   text-transform: uppercase;
   margin-bottom: 15px;
@@ -125,7 +143,6 @@
 .note-box p {
   font-size: 12px;
   text-align: center;
-  color: white;
   font-family: sans-serif;
   text-transform: uppercase;
 }
@@ -151,7 +168,6 @@
   transition: 420ms;
 }
 button span {
-  color: rgb(255, 255, 255);
   font-size: 50px;
   font-family: sans-serif;
   text-transform: uppercase;
@@ -208,7 +224,7 @@ button span {
 }
 .btn-answer {
   background-color: #bf29a4;
-  color: white;
+  color: var(--color-text);
   width: 100%;
   padding: 15px 7px;
   margin-bottom: 13px;
@@ -228,7 +244,7 @@ button span {
   );
   border: none;
   border-radius: 5px;
-  color: white;
+  color: var(--color-text);
   font-family: sans-serif;
   cursor: pointer;
 }
@@ -257,17 +273,17 @@ button span {
   display: inline;
 }
 .green-correct-answer {
-  background-color: green;
+  background-color: var(--color-correct-answer);
   pointer-events: none;
 }
 .red-uncorrect-answer {
-  background-color: red;
+  background-color: var(--color-uncorrect-answer);
 }
 .disable-button {
   pointer-events: none;
 }
 .disable-button_correct {
-  background-color: gray;
+  background-color: var(--color-show-correct-answer);
   pointer-events: none;
 }
 

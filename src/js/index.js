@@ -10,7 +10,7 @@ const totalCount = document.querySelector(".end-menu__total");
 const exitBtn = document.querySelector(".exit-button");
 const noteBox = document.querySelector(".note-box");
 const okBtn = document.querySelector(".ok-button");
-const labelTimer = document.querySelector(".label-timer");
+const labelTimer = document.querySelector(".question-timer");
 
 let answerButton;
 let timer;
@@ -23,49 +23,37 @@ let count = 0;
 let index = 0;
 
 startBtn.addEventListener("click", () => {
-  startBtn.classList.toggle("start-button_deactivate");
-  startMenu.classList.toggle("start-menu_show-menu");
-  //timer = startTimer();
+  classManagment("startBtn");
   showQuestions(index);
 });
 
 contBtn.addEventListener("click", () => {
   if (!(currentQuestion == listOfQuestions.length)) {
     document.querySelector(`section[id='active']`).remove();
-    labelTimer.classList.toggle("show-timer");
+    classManagment("contBtn", "during");
     showQuestions(++index);
-    contBtn.classList.toggle("continue-button_show");
   } else {
+    index = 0;
     yourCount.textContent = count;
     totalCount.textContent = listOfQuestions.length;
-    clearInterval(timer);
-    labelTimer.classList.remove("show-timer");
-    startMenu.classList.toggle("start-menu_show-menu");
-    endMenu.classList.toggle("end-menu_show-menu");
     document.querySelector(`section[id='active']`).remove();
-    index = 0;
+    clearInterval(timer);
+    classManagment("contBtn", "end");
   }
 });
 
 concedeBtn.addEventListener("click", () => {
-  startMenu.classList.toggle("start-menu_show-menu");
-  startBtn.classList.toggle("start-button_deactivate");
-  noteBox.classList.remove("note-box_show");
-  contBtn.classList.remove("continue-button_show");
   document.querySelector(`section[id='active']`).remove();
   if (timer) clearInterval(timer);
-  labelTimer.classList.toggle("show-timer");
+  classManagment("concedeBtn");
   count = 0;
   index = 0;
 });
 
 exitBtn.addEventListener("click", () => {
   count = 0;
-  endMenu.classList.toggle("end-menu_show-menu");
-  startBtn.classList.toggle("start-button_deactivate");
-  contBtn.classList.toggle("continue-button_show");
   if (timer) clearInterval(timer);
-  labelTimer.classList.toggle("show-timer");
+  classManagment("exitBtn");
 });
 
 okBtn.addEventListener("click", () => {
@@ -80,8 +68,8 @@ function getProp(check) {
       if (check == 0) {
         if (item.textContent === correctAns) {
           count++;
-          item.classList.add("green-correct-answer");
           if (timer) clearInterval(timer);
+          item.classList.add("green-correct-answer");
           labelTimer.classList.add("show-green-timer");
           answerButton.forEach((item) => {
             item.classList.add("disable-button");
@@ -163,7 +151,7 @@ class Quiz {
     this.answers = answers;
   }
   showQuest() {
-    labelTimer.classList.toggle("show-timer");
+    labelTimer.classList.add("show-timer");
     if (timer) clearInterval(timer);
     timer = startTimer();
     startMenu.insertAdjacentHTML(
@@ -200,6 +188,45 @@ function showQuestions(index) {
   } else {
     noteBox.classList.remove("note-box_show");
     getProp(0);
+  }
+}
+
+function classManagment(element, moment) {
+  switch (element) {
+    case "startBtn":
+      startBtn.classList.add("start-button_deactivate");
+      startMenu.classList.add("start-menu_show-menu");
+      break;
+    case "contBtn":
+      switch (moment) {
+        case "during":
+          labelTimer.classList.add("show-timer");
+          contBtn.classList.remove("continue-button_show");
+          break;
+        case "end":
+          labelTimer.classList.remove("show-timer");
+          startMenu.classList.remove("start-menu_show-menu");
+          endMenu.classList.add("end-menu_show-menu");
+          break;
+        default:
+          alert(`something not found at: ${element.toString()} ${moment}`);
+      }
+      break;
+    case "concedeBtn":
+      labelTimer.classList.remove("show-timer");
+      startMenu.classList.remove("start-menu_show-menu");
+      startBtn.classList.remove("start-button_deactivate");
+      noteBox.classList.remove("note-box_show");
+      contBtn.classList.remove("continue-button_show");
+      break;
+    case "exitBtn":
+      labelTimer.classList.remove("show-timer");
+      endMenu.classList.remove("end-menu_show-menu");
+      startBtn.classList.remove("start-button_deactivate");
+      contBtn.classList.remove("continue-button_show");
+      break;
+    default:
+      alert(`not found case: ${element}`);
   }
 }
 

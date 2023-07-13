@@ -4,6 +4,7 @@
   --color-total-lightGreen: rgb(10, 235, 10);
   --color-text: rgb(255, 255, 255);
   --color-correct-answer: rgb(0, 128, 0);
+  --color-green-timer: rgb(243, 36, 157);
   --color-uncorrect-answer: rgb(255, 0, 0);
   --color-show-correct-answer: rgb(128, 128, 128);
 }
@@ -26,6 +27,16 @@ span {
   height: 100vh;
   background-color: var(--color-container-background);
   overflow: hidden;
+}
+
+.label-timer {
+  padding-top: 20px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--color-text);
+  font-size: 80px;
+  opacity: 0;
 }
 
 .start-menu {
@@ -117,7 +128,7 @@ span {
 .note-box {
   position: absolute;
   top: 80px;
-  left: 60%;
+  left: 70%;
   transform: translateX(-50%);
   background: linear-gradient(
     316deg,
@@ -255,6 +266,16 @@ button span {
   flex-direction: column;
 }
 
+.show-timer {
+  opacity: 1;
+}
+.show-red-timer {
+  color: var(--color-uncorrect-answer);
+}
+.show-green-timer {
+  color: var(--color-green-timer);
+}
+
 .start-button_deactivate {
   opacity: 0;
 }
@@ -263,7 +284,7 @@ button span {
   transform: translate(-50%, -50%);
 }
 .end-menu_show-menu {
-  transition: 570ms;
+  transition: all 570ms;
   transform: translate(-50%, -50%);
 }
 .note-box_show {

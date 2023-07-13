@@ -10,8 +10,10 @@ const totalCount = document.querySelector(".end-menu__total");
 const exitBtn = document.querySelector(".exit-button");
 const noteBox = document.querySelector(".note-box");
 const okBtn = document.querySelector(".ok-button");
+const labelTimer = document.querySelector(".label-timer");
 
 let answerButton;
+let timer;
 
 let correctAns;
 let corrSevAns;
@@ -23,17 +25,21 @@ let index = 0;
 startBtn.addEventListener("click", () => {
   startBtn.classList.toggle("start-button_deactivate");
   startMenu.classList.toggle("start-menu_show-menu");
+  //timer = startTimer();
   showQuestions(index);
 });
 
 contBtn.addEventListener("click", () => {
   if (!(currentQuestion == listOfQuestions.length)) {
     document.querySelector(`section[id='active']`).remove();
+    labelTimer.classList.toggle("show-timer");
     showQuestions(++index);
     contBtn.classList.toggle("continue-button_show");
   } else {
     yourCount.textContent = count;
     totalCount.textContent = listOfQuestions.length;
+    clearInterval(timer);
+    labelTimer.classList.remove("show-timer");
     startMenu.classList.toggle("start-menu_show-menu");
     endMenu.classList.toggle("end-menu_show-menu");
     document.querySelector(`section[id='active']`).remove();
@@ -47,6 +53,8 @@ concedeBtn.addEventListener("click", () => {
   noteBox.classList.remove("note-box_show");
   contBtn.classList.remove("continue-button_show");
   document.querySelector(`section[id='active']`).remove();
+  if (timer) clearInterval(timer);
+  labelTimer.classList.toggle("show-timer");
   count = 0;
   index = 0;
 });
@@ -56,40 +64,13 @@ exitBtn.addEventListener("click", () => {
   endMenu.classList.toggle("end-menu_show-menu");
   startBtn.classList.toggle("start-button_deactivate");
   contBtn.classList.toggle("continue-button_show");
+  if (timer) clearInterval(timer);
+  labelTimer.classList.toggle("show-timer");
 });
 
 okBtn.addEventListener("click", () => {
   noteBox.classList.toggle("note-box_show");
 });
-
-class Quiz {
-  constructor(number, question, correctAnswer, answers) {
-    this.number = number;
-    this.question = question;
-    this.correctAnswer = correctAnswer;
-    this.answers = answers;
-  }
-  showQuest() {
-    startMenu.insertAdjacentHTML(
-      "afterbegin",
-      `
-        <section class="start-menu__text" id="active">
-          <h1>${this.question}?</h1>
-          <div class="start-menu__curr-of-total">${this.number} of ${listOfQuestions.length}</div>
-          <div class="answers-box">
-          <button class="btn-answer">${this.answers[0]}</button>
-          <button class="btn-answer">${this.answers[1]}</button>
-          <button class="btn-answer">${this.answers[2]}</button>
-          <button class="btn-answer">${this.answers[3]}</button>
-          </div>
-        </section>
-    `
-    );
-    correctAns = this.correctAnswer[0];
-    corrSevAns = this.correctAnswer;
-    currentQuestion = this.number;
-  }
-}
 
 function getProp(check) {
   let tempArr = [];
@@ -100,12 +81,16 @@ function getProp(check) {
         if (item.textContent === correctAns) {
           count++;
           item.classList.add("green-correct-answer");
+          if (timer) clearInterval(timer);
+          labelTimer.classList.add("show-green-timer");
           answerButton.forEach((item) => {
             item.classList.add("disable-button");
           });
           contBtn.classList.add("continue-button_show");
         } else {
           item.classList.add("red-uncorrect-answer");
+          if (timer) clearInterval(timer);
+          labelTimer.classList.add("show-red-timer");
           answerButton.forEach((item) => {
             if (correctAns === item.textContent) {
               item.classList.add("disable-button_correct");
@@ -128,6 +113,8 @@ function getProp(check) {
           contBtn.classList.add("continue-button_show");
         } else {
           item.classList.add("red-uncorrect-answer");
+          if (timer) clearInterval(timer);
+          labelTimer.classList.add("show-red-timer");
           if (tempArr.length == corrSevAns.length) count--;
           answerButton.forEach((item) => {
             if (corrSevAns.includes(item.textContent)) {
@@ -141,6 +128,63 @@ function getProp(check) {
       }
     });
   });
+}
+
+function startTimer() {
+  let time = 10;
+  labelTimer.textContent = `${time}`;
+  labelTimer.classList.remove("show-green-timer");
+  labelTimer.classList.remove("show-red-timer");
+  const timer = setInterval(tick, 1000);
+  function tick() {
+    labelTimer.textContent = `${time}`;
+    if (time == 0) {
+      clearInterval(timer);
+      labelTimer.classList.toggle("show-red-timer");
+      answerButton.forEach((item) => {
+        if (corrSevAns.includes(item.textContent)) {
+          item.classList.add("disable-button_correct");
+        } else {
+          item.classList.add("disable-button");
+        }
+      });
+      contBtn.classList.add("continue-button_show");
+    }
+    time--;
+  }
+  return timer;
+}
+
+class Quiz {
+  constructor(number, question, correctAnswer, answers) {
+    this.number = number;
+    this.question = question;
+    this.correctAnswer = correctAnswer;
+    this.answers = answers;
+  }
+  showQuest() {
+    labelTimer.classList.toggle("show-timer");
+    if (timer) clearInterval(timer);
+    timer = startTimer();
+    startMenu.insertAdjacentHTML(
+      "afterbegin",
+      `
+          <section class="start-menu__text" id="active">
+            <h1>${this.question}?</h1>
+            <div class="start-menu__curr-of-total">${this.number} of ${listOfQuestions.length}</div>
+            <div class="answers-box">
+            <button class="btn-answer">${this.answers[0]}</button>
+            <button class="btn-answer">${this.answers[1]}</button>
+            <button class="btn-answer">${this.answers[2]}</button>
+            <button class="btn-answer">${this.answers[3]}</button>
+            </div>
+          </section>
+      `
+    );
+    correctAns = this.correctAnswer[0];
+    corrSevAns = this.correctAnswer;
+    currentQuestion = this.number;
+  }
 }
 
 function showQuestions(index) {

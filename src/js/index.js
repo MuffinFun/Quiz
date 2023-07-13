@@ -1,16 +1,37 @@
 "use strict";
 
-const startBtn = document.querySelector(".start-button");
+const mainContainer = document.querySelector(".container");
 const startMenu = document.querySelector(".start-menu");
 const endMenu = document.querySelector(".end-menu");
+const noteBox = document.querySelector(".note-box");
+
+const labelTimer = document.querySelector(".question-timer");
+
+const totalCount = document.querySelector(".end-menu__total");
+const yourCount = document.querySelector(".end-menu__count");
+
+const startBtn = document.querySelector(".start-button");
 const contBtn = document.querySelector(".continue-button");
 const concedeBtn = document.querySelector(".concede-button");
-const yourCount = document.querySelector(".end-menu__count");
-const totalCount = document.querySelector(".end-menu__total");
 const exitBtn = document.querySelector(".exit-button");
-const noteBox = document.querySelector(".note-box");
 const okBtn = document.querySelector(".ok-button");
-const labelTimer = document.querySelector(".question-timer");
+
+const inputViolet = document
+  .querySelector("#violet")
+  .addEventListener("click", () => {
+    changeTheme(0);
+  });
+
+const inputGreen = document
+  .querySelector("#green")
+  .addEventListener("click", () => {
+    changeTheme(1);
+  });
+const inputDark = document
+  .querySelector("#dark")
+  .addEventListener("click", () => {
+    changeTheme(2);
+  });
 
 let answerButton;
 let timer;
@@ -191,6 +212,77 @@ function showQuestions(index) {
   }
 }
 
+function changeTheme(themeNumber) {
+  mainContainer.style.background = listOfThemes[themeNumber].container;
+  startMenu.style.background = listOfThemes[themeNumber].startEndMenuNoteBox;
+  endMenu.style.background = listOfThemes[themeNumber].startEndMenuNoteBox;
+  noteBox.style.background = listOfThemes[themeNumber].startEndMenuNoteBox;
+  startBtn.style.background = listOfThemes[themeNumber].startButton;
+  contBtn.style.background = listOfThemes[themeNumber].contConcedeExitOkBtn;
+  concedeBtn.style.background = listOfThemes[themeNumber].contConcedeExitOkBtn;
+  exitBtn.style.background = listOfThemes[themeNumber].contConcedeExitOkBtn;
+  okBtn.style.background = listOfThemes[themeNumber].contConcedeExitOkBtn;
+}
+
+const listOfThemes = [
+  {
+    container: "rgb(232, 138, 234)",
+    startEndMenuNoteBox: `linear-gradient(
+      316deg,
+      rgba(36, 5, 38, 1) 0%,
+      rgba(82, 9, 91, 1) 16%,
+      rgba(138, 14, 157, 1) 79%,
+      rgba(163, 18, 185, 1) 90%
+    )`,
+    startButton: `linear-gradient(
+      74deg,
+      rgba(187, 18, 193, 1) 9%,
+      rgba(187, 18, 193, 1) 46%,
+      rgba(103, 10, 122, 1) 77%,
+      rgba(65, 6, 90, 1) 87%,
+      rgba(0, 12, 36, 1) 99%
+    )`,
+    contConcedeExitOkBtn: `linear-gradient(
+      316deg,
+      rgba(77, 10, 66, 1) 0%,
+      rgba(120, 14, 93, 1) 1%,
+      rgba(190, 16, 118, 1) 40%,
+      rgba(221, 18, 138, 1) 90%
+    )`,
+  },
+  {
+    container: "rgb(77, 201, 77)",
+    startEndMenuNoteBox: `linear-gradient(
+      316deg,
+      rgba(3, 57, 6, 1) 0%,
+      rgba(8, 96, 29, 1) 16%,
+      rgba(5, 153, 65, 1) 79%,
+      rgba(9, 179, 78, 1) 90%
+    )`,
+    startButton: `linear-gradient(
+      74deg,
+      rgba(6, 194, 100, 1) 9%,
+      rgba(22, 143, 70, 1) 46%,
+      rgba(27, 129, 68, 1) 63%,
+      rgba(13, 95, 31, 1) 87%,
+      rgba(7, 69, 10, 1) 100%
+    )`,
+    contConcedeExitOkBtn: `linear-gradient(
+      316deg,
+      rgba(3, 57, 6, 1) 0%,
+      rgba(8, 96, 29, 1) 1%,
+      rgba(5, 153, 65, 1) 40%,
+      rgba(9, 179, 78, 1) 90%
+    )`,
+  },
+  {
+    container: "rgb(18, 18, 18)",
+    startEndMenuNoteBox: `rgb(26, 24, 24)`,
+    startButton: `rgb(26, 24, 24)`,
+    contConcedeExitOkBtn: `rgb(18, 18, 18)`,
+  },
+];
+
 function classManagment(element, moment) {
   switch (element) {
     case "startBtn":
@@ -319,3 +411,5 @@ const listOfQuestions = [
     answers: ["4", "10", "8", "5"],
   },
 ];
+
+document.addEventListener("DOMContentLoaded", changeTheme(0));

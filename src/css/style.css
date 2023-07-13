@@ -7,6 +7,11 @@
   --color-green-timer: rgb(255, 0, 106);
   --color-uncorrect-answer: rgb(255, 0, 0);
   --color-show-correct-answer: rgb(128, 128, 128);
+  --color-ans-button: rgba(121, 79, 159, 0.251);
+  --color-radio-violet: rgb(204, 33, 210);
+  --color-radio-green: rgb(11, 232, 52);
+  --color-radio-dark: rgb(79, 13, 138);
+  --color-border-timer: rgba(112, 91, 91, 0.29);
 }
 
 h1,
@@ -25,12 +30,11 @@ span {
   position: relative;
   width: 100%;
   height: 100vh;
-  background-color: var(--color-container-background);
   overflow: hidden;
 }
 
 .question-timer {
-  padding-top: 20px;
+  padding-top: 25px;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
@@ -42,13 +46,6 @@ span {
 
 .start-menu {
   position: absolute;
-  background: linear-gradient(
-    316deg,
-    rgba(36, 5, 38, 1) 0%,
-    rgba(82, 9, 91, 1) 16%,
-    rgba(138, 14, 157, 1) 79%,
-    rgba(163, 18, 185, 1) 90%
-  );
   border-radius: 30px 45px 100px 30px;
   box-shadow: 11px 15px 24px 1px rgba(45, 9, 41, 0.54);
   width: 600px;
@@ -91,13 +88,6 @@ span {
   top: 50%;
   left: 50%;
   transform: translate(-350%, -50%);
-  background: linear-gradient(
-    316deg,
-    rgba(36, 5, 38, 1) 0%,
-    rgba(82, 9, 91, 1) 16%,
-    rgba(138, 14, 157, 1) 79%,
-    rgba(163, 18, 185, 1) 90%
-  );
   border-radius: 30px 45px 100px 30px;
   box-shadow: 11px 15px 24px 1px rgba(45, 9, 41, 0.54);
   width: 450px;
@@ -131,13 +121,7 @@ span {
   top: 80px;
   left: 70%;
   transform: translateX(-50%);
-  background: linear-gradient(
-    316deg,
-    rgba(36, 5, 38, 1) 0%,
-    rgba(82, 9, 91, 1) 16%,
-    rgba(138, 14, 157, 1) 79%,
-    rgba(163, 18, 185, 1) 90%
-  );
+  box-shadow: 11px 15px 24px 1px rgba(45, 9, 41, 0.54);
   border-radius: 20px;
   width: 150px;
   height: 95px;
@@ -163,19 +147,11 @@ span {
   position: absolute;
   border: none;
   padding: 40px 50px;
-  background: linear-gradient(
-    74deg,
-    rgba(187, 18, 193, 1) 9%,
-    rgba(187, 18, 193, 1) 46%,
-    rgba(103, 10, 122, 1) 77%,
-    rgba(65, 6, 90, 1) 87%,
-    rgba(0, 12, 36, 1) 99%
-  );
   border-radius: 15px 60px 20px 10px;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  box-shadow: 17px 2px 42px -3px rgba(4, 12, 19, 0.87);
+  box-shadow: 17px 2px 42px -3px rgba(47, 14, 71, 0.87);
   cursor: pointer;
   transition: 420ms;
 }
@@ -186,13 +162,6 @@ button span {
 }
 .continue-button {
   padding: 10px 15px;
-  background: linear-gradient(
-    316deg,
-    rgba(77, 10, 66, 1) 0%,
-    rgba(120, 14, 93, 1) 1%,
-    rgba(190, 16, 118, 1) 40%,
-    rgba(221, 18, 138, 1) 90%
-  );
   border: none;
   border-radius: 15px 5px 15px 15px;
   cursor: pointer;
@@ -203,13 +172,6 @@ button span {
 }
 .concede-button {
   padding: 10px 15px;
-  background: linear-gradient(
-    316deg,
-    rgba(77, 10, 66, 1) 0%,
-    rgba(120, 14, 93, 1) 1%,
-    rgba(190, 16, 118, 1) 40%,
-    rgba(221, 18, 138, 1) 90%
-  );
   border: none;
   border-radius: 15px 5px 15px 15px;
   cursor: pointer;
@@ -220,13 +182,6 @@ button span {
 
 .exit-button {
   padding: 10px 15px;
-  background: linear-gradient(
-    316deg,
-    rgba(77, 10, 66, 1) 0%,
-    rgba(120, 14, 93, 1) 1%,
-    rgba(190, 16, 118, 1) 40%,
-    rgba(221, 18, 138, 1) 90%
-  );
   border: none;
   border-radius: 15px 5px 15px 15px;
   cursor: pointer;
@@ -235,7 +190,7 @@ button span {
   font-size: 20px;
 }
 .btn-answer {
-  background-color: #bf29a4;
+  background-color: var(--color-ans-button);
   color: var(--color-text);
   width: 100%;
   padding: 15px 7px;
@@ -247,13 +202,6 @@ button span {
 }
 
 .ok-button {
-  background: linear-gradient(
-    316deg,
-    rgba(77, 10, 66, 1) 0%,
-    rgba(120, 14, 93, 1) 1%,
-    rgba(190, 16, 118, 1) 40%,
-    rgba(221, 18, 138, 1) 90%
-  );
   border: none;
   border-radius: 5px;
   color: var(--color-text);
@@ -265,6 +213,53 @@ button span {
   width: 100%;
   display: flex;
   flex-direction: column;
+}
+
+.theme-container {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  right: 5px;
+  top: 5px;
+  z-index: 10;
+}
+.theme-container p {
+  font-size: 25px;
+  margin-bottom: 8px;
+}
+.theme-container__inputs-box {
+  font-size: 20px;
+  color: var(--color-text);
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+input {
+  appearance: none;
+
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  border: 2px solid var(--color-radio-dark);
+  transition: 0.2s all linear;
+  outline: none;
+  margin-right: 5px;
+}
+input:checked {
+  border: 6px solid #4f0d8a;
+}
+#violet:hover {
+  border: 12px solid var(--color-radio-violet);
+  font-size: 30px;
+}
+#green:hover {
+  border: 12px solid var(--color-radio-green);
+}
+#dark:hover {
+  border: 12px solid var(--color-radio-dark);
 }
 
 .show-timer {
@@ -338,12 +333,24 @@ button span {
   .start-menu__buttons button {
     width: 85%;
   }
+  .theme-container__inputs-box {
+    flex-direction: column;
+    align-items: end;
+  }
 }
 
-@media (max-width: 525px) {
+@media (max-width: 550px) {
   .question-timer {
-    padding-top: 40px;
-    left: 32%;
+    padding-top: 0;
+    width: 100px;
+    display: flex;
+    justify-content: center;
+    align-self: center;
+    top: 0;
+    left: 50px;
+    border: 2.5px solid var(--color-border-timer);
+    box-shadow: 4px 4px 20px 6px rgba(200, 245, 247, 0.2);
+    border-bottom-right-radius: 35px;
   }
   .start-menu {
     width: 265px;
@@ -368,5 +375,15 @@ button span {
   }
   .end-menu p {
     font-size: 15px;
+  }
+  .theme-container {
+    align-items: flex-start;
+    top: auto;
+    right: auto;
+    left: 5px;
+    bottom: 5px;
+  }
+  .theme-container__inputs-box {
+    flex-direction: row-reverse;
   }
 }

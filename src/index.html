@@ -11,6 +11,29 @@
   <body>
     <main class="container">
       <div class="question-timer"></div>
+      <form class="theme-container">
+        <p>Choose the theme you want:</p>
+        <div class="theme-container__inputs-box">
+          <div class="theme-container__inputs">
+            <label for="violet">Violet</label>
+            <input
+              type="radio"
+              id="violet"
+              name="contact"
+              value="violet"
+              checked
+            />
+          </div>
+          <div class="theme-container__inputs">
+            <label for="green">Green</label>
+            <input type="radio" id="green" name="contact" value="green" />
+          </div>
+          <div class="theme-container__inputs">
+            <label for="dark">Dark</label>
+            <input type="radio" id="dark" name="contact" value="dark" />
+          </div>
+        </div>
+      </form>
       <button class="start-button">
         <span>Start</span>
       </button>

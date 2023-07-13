@@ -4,7 +4,7 @@
   --color-total-lightGreen: rgb(10, 235, 10);
   --color-text: rgb(255, 255, 255);
   --color-correct-answer: rgb(0, 128, 0);
-  --color-green-timer: rgb(243, 36, 157);
+  --color-green-timer: rgb(255, 0, 106);
   --color-uncorrect-answer: rgb(255, 0, 0);
   --color-show-correct-answer: rgb(128, 128, 128);
 }
@@ -29,7 +29,7 @@ span {
   overflow: hidden;
 }
 
-.label-timer {
+.question-timer {
   padding-top: 20px;
   position: absolute;
   left: 50%;
@@ -37,6 +37,7 @@ span {
   color: var(--color-text);
   font-size: 80px;
   opacity: 0;
+  pointer-events: none;
 }
 
 .start-menu {
@@ -278,6 +279,7 @@ button span {
 
 .start-button_deactivate {
   opacity: 0;
+  pointer-events: none;
 }
 .start-menu_show-menu {
   opacity: 1;
@@ -339,6 +341,10 @@ button span {
 }
 
 @media (max-width: 525px) {
+  .question-timer {
+    padding-top: 40px;
+    left: 32%;
+  }
   .start-menu {
     width: 265px;
     border-radius: 30px 45px 30px 30px;

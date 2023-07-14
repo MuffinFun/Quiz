@@ -249,7 +249,7 @@ input {
   margin-right: 5px;
 }
 input:checked {
-  border: 6px solid #4f0d8a;
+  border: 6px solid var(--color-radio-dark);
 }
 #violet:hover {
   border: 12px solid var(--color-radio-violet);

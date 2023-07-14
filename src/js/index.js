@@ -23,7 +23,7 @@ let correctAns;
 let corrSevAns;
 let currentQuestion;
 
-let count = 0;
+let scoreCount = 0;
 let index = 0;
 
 const inputViolet = document
@@ -42,7 +42,6 @@ const inputDark = document
     changeTheme(2);
   });
 
-
 startBtn.addEventListener("click", () => {
   classManagment("startBtn");
   showQuestions(index);
@@ -55,7 +54,7 @@ contBtn.addEventListener("click", () => {
     showQuestions(++index);
   } else {
     index = 0;
-    yourCount.textContent = count;
+    yourCount.textContent = scoreCount;
     totalCount.textContent = listOfQuestions.length;
     document.querySelector(`section[id='active']`).remove();
     clearInterval(timer);
@@ -67,12 +66,12 @@ concedeBtn.addEventListener("click", () => {
   document.querySelector(`section[id='active']`).remove();
   if (timer) clearInterval(timer);
   classManagment("concedeBtn");
-  count = 0;
+  scoreCount = 0;
   index = 0;
 });
 
 exitBtn.addEventListener("click", () => {
-  count = 0;
+  scoreCount = 0;
   if (timer) clearInterval(timer);
   classManagment("exitBtn");
 });
@@ -81,68 +80,65 @@ okBtn.addEventListener("click", () => {
   noteBox.classList.toggle("note-box_show");
 });
 
-function getProp(check) {
+function getProp(checkSeveral) {
   let tempArr = [];
+  const answerBox = document.querySelector(".answers-box");
   answerButton = document.querySelectorAll(".btn-answer");
-  answerButton.forEach((item) => {
-    item.addEventListener("click", () => {
-      if (check == 0) {
-        if (item.textContent === correctAns) {
-          count++;
-          if (timer) clearInterval(timer);
-          item.classList.add("green-correct-answer");
-          labelTimer.classList.add("show-green-timer");
-          answerButton.forEach((item) => {
-            item.classList.add("disable-button");
+
+  answerBox.addEventListener("click", function (e) {
+    e.preventDefault();
+    const clicked = e.target.closest(".btn-answer");
+    if (!clicked) return;
+    switch (checkSeveral) {
+      case 0:
+        if (clicked.textContent === correctAns) {
+          scoreCount++;
+          clicked.classList.add("green-correct-answer");
+          labelTimer.classList.add("show-pink-timer");
+          answerButton.forEach((btn) => {
+            btn.classList.add("disable-button");
           });
-          contBtn.classList.add("continue-button_show");
         } else {
-          item.classList.add("red-uncorrect-answer");
-          if (timer) clearInterval(timer);
+          clicked.classList.add("red-uncorrect-answer");
           labelTimer.classList.add("show-red-timer");
-          answerButton.forEach((item) => {
-            if (correctAns === item.textContent) {
-              item.classList.add("disable-button_correct");
-            } else {
-              item.classList.add("disable-button");
-            }
+          answerButton.forEach((btn) => {
+            if (correctAns === btn.textContent)
+              btn.classList.add("disable-button__correct");
+            btn.classList.add("disable-button");
           });
-          contBtn.classList.add("continue-button_show");
         }
-      } else {
+        break;
+      case 1:
         if (
-          corrSevAns.includes(item.textContent) &&
-          !tempArr.includes(item.textContent)
+          corrSevAns.includes(clicked.textContent) &&
+          !tempArr.includes(clicked.textContent)
         ) {
-          tempArr.push(item.textContent);
-          item.classList.add("green-correct-answer");
+          tempArr.push(clicked.textContent);
+          clicked.classList.add("green-correct-answer");
           if (tempArr.length == corrSevAns.length) {
-            count++;
+            scoreCount++;
           }
-          contBtn.classList.add("continue-button_show");
         } else {
-          item.classList.add("red-uncorrect-answer");
-          if (timer) clearInterval(timer);
+          clicked.classList.add("red-uncorrect-answer");
           labelTimer.classList.add("show-red-timer");
-          if (tempArr.length == corrSevAns.length) count--;
-          answerButton.forEach((item) => {
-            if (corrSevAns.includes(item.textContent)) {
-              item.classList.add("disable-button_correct");
-            } else {
-              item.classList.add("disable-button");
-            }
+          if (tempArr.length == corrSevAns.length) scoreCount--;
+          answerButton.forEach((btn) => {
+            if (corrSevAns.includes(btn.textContent))
+              btn.classList.add("disable-button__correct");
+            btn.classList.add("disable-button");
           });
-          contBtn.classList.add("continue-button_show");
         }
-      }
-    });
+        break;
+    }
+    clearInterval(timer);
+    contBtn.classList.add("continue-button_show");
   });
 }
 
 function startTimer() {
   let time = 10;
   labelTimer.textContent = `${time}`;
-  labelTimer.classList.remove("show-green-timer");
+  labelTimer.classList.remove("show-pink-timer");
   labelTimer.classList.remove("show-red-timer");
   const timer = setInterval(tick, 1000);
   function tick() {
@@ -152,7 +148,7 @@ function startTimer() {
       labelTimer.classList.toggle("show-red-timer");
       answerButton.forEach((item) => {
         if (corrSevAns.includes(item.textContent)) {
-          item.classList.add("disable-button_correct");
+          item.classList.add("disable-button__correct");
         } else {
           item.classList.add("disable-button");
         }
@@ -223,7 +219,6 @@ function changeTheme(themeNumber) {
   exitBtn.style.background = listOfThemes[themeNumber].contConcedeExitOkBtn;
   okBtn.style.background = listOfThemes[themeNumber].contConcedeExitOkBtn;
 }
-
 
 function classManagment(element, moment) {
   switch (element) {

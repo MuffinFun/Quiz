@@ -14,6 +14,12 @@
   --color-border-timer: rgba(112, 91, 91, 0.29);
 }
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 h1,
 h2,
 h3 {

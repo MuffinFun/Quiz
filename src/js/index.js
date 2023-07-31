@@ -16,15 +16,7 @@ const concedeBtn = document.querySelector(".concede-button");
 const exitBtn = document.querySelector(".exit-button");
 const okBtn = document.querySelector(".ok-button");
 
-let answerButton;
 let timer;
-
-let correctAns;
-let corrSevAns;
-let currentQuestion;
-
-let scoreCount = 0;
-let index = 0;
 
 const inputViolet = document
   .querySelector("#violet")
@@ -42,98 +34,177 @@ const inputDark = document
     changeTheme(2);
   });
 
-startBtn.addEventListener("click", () => {
-  classManagment("startBtn");
-  showQuestions(index);
-});
-
-contBtn.addEventListener("click", () => {
-  if (!(currentQuestion == listOfQuestions.length)) {
-    document.querySelector(`section[id='active']`).remove();
-    classManagment("contBtn", "during");
-    showQuestions(++index);
-  } else {
-    index = 0;
-    yourCount.textContent = scoreCount;
-    totalCount.textContent = listOfQuestions.length;
-    document.querySelector(`section[id='active']`).remove();
-    clearInterval(timer);
-    classManagment("contBtn", "end");
+class Quiz {
+  _corrSevAns;
+  constructor(number, question, correctAnswer, answers) {
+    this.number = number;
+    this.question = question;
+    this.correctAnswer = correctAnswer;
+    this.answers = answers;
   }
-});
-
-concedeBtn.addEventListener("click", () => {
-  document.querySelector(`section[id='active']`).remove();
-  if (timer) clearInterval(timer);
-  classManagment("concedeBtn");
-  scoreCount = 0;
-  index = 0;
-});
-
-exitBtn.addEventListener("click", () => {
-  scoreCount = 0;
-  if (timer) clearInterval(timer);
-  classManagment("exitBtn");
-});
-
-okBtn.addEventListener("click", () => {
-  noteBox.classList.toggle("note-box_show");
-});
-
-function getProp(checkSeveral) {
-  let tempArr = [];
-  const answerBox = document.querySelector(".answers-box");
-  answerButton = document.querySelectorAll(".btn-answer");
-
-  answerBox.addEventListener("click", function (e) {
-    e.preventDefault();
-    const clicked = e.target.closest(".btn-answer");
-    if (!clicked) return;
-    switch (checkSeveral) {
-      case 0:
-        if (clicked.textContent === correctAns) {
-          scoreCount++;
-          clicked.classList.add("green-correct-answer");
-          labelTimer.classList.add("show-pink-timer");
-          answerButton.forEach((btn) => {
-            btn.classList.add("disable-button");
-          });
-        } else {
-          clicked.classList.add("red-uncorrect-answer");
-          labelTimer.classList.add("show-red-timer");
-          answerButton.forEach((btn) => {
-            if (correctAns === btn.textContent)
-              btn.classList.add("disable-button__correct");
-            btn.classList.add("disable-button");
-          });
-        }
-        break;
-      case 1:
-        if (
-          corrSevAns.includes(clicked.textContent) &&
-          !tempArr.includes(clicked.textContent)
-        ) {
-          tempArr.push(clicked.textContent);
-          clicked.classList.add("green-correct-answer");
-          if (tempArr.length == corrSevAns.length) {
-            scoreCount++;
-          }
-        } else {
-          clicked.classList.add("red-uncorrect-answer");
-          labelTimer.classList.add("show-red-timer");
-          if (tempArr.length == corrSevAns.length) scoreCount--;
-          answerButton.forEach((btn) => {
-            if (corrSevAns.includes(btn.textContent))
-              btn.classList.add("disable-button__correct");
-            btn.classList.add("disable-button");
-          });
-        }
-        break;
-    }
-    clearInterval(timer);
-    contBtn.classList.add("continue-button_show");
-  });
+  _showQuest() {
+    labelTimer.classList.add("show-timer");
+    if (timer) clearInterval(timer);
+    timer = startTimer();
+    startMenu.insertAdjacentHTML(
+      "afterbegin",
+      `
+            <section class="start-menu__text" id="active">
+              <h1>${this.question}?</h1>
+              <div class="start-menu__curr-of-total">${this.number} of ${listOfQuestions.length}</div>
+              <div class="answers-box">
+              <button class="btn-answer">${this.answers[0]}</button>
+              <button class="btn-answer">${this.answers[1]}</button>
+              <button class="btn-answer">${this.answers[2]}</button>
+              <button class="btn-answer">${this.answers[3]}</button>
+              </div>
+            </section>
+        `
+    );
+  }
+  _corrSevAns = this.correctAnswer;
 }
+
+class App {
+  _quizApp;
+  _index = 0;
+  _scoreCount = 0;
+
+  _answerButton;
+
+  constructor() {
+    startBtn.addEventListener("click", this._startQuiz.bind(this));
+
+    contBtn.addEventListener("click", this._nextQuestions.bind(this));
+
+    concedeBtn.addEventListener("click", this._concedeQuiz.bind(this));
+
+    exitBtn.addEventListener("click", this._exitQuiz.bind(this));
+
+    okBtn.addEventListener("click", () => {
+      noteBox.classList.toggle("note-box_show");
+    });
+  }
+  _startQuiz(e) {
+    e.preventDefault();
+    classManagment("startBtn");
+    this._setQuestions(this._index);
+  }
+  _setQuestions(_index) {
+    this._quizApp = new Quiz(
+      listOfQuestions[_index].number,
+      listOfQuestions[_index].question,
+      listOfQuestions[_index].correctAnswer,
+      listOfQuestions[_index].answers
+    );
+
+    this._quizApp._showQuest();
+
+    if (listOfQuestions[this._index].several == 1) {
+      noteBox.classList.add("note-box_show");
+      this._getAnswer(1);
+    } else {
+      noteBox.classList.remove("note-box_show");
+      this._getAnswer(0);
+    }
+  }
+  _getAnswer(checkSeveral) {
+    let tempArr = [];
+    const getThis = this;
+
+    const answerBox = document.querySelector(".answers-box");
+
+    this._answerButton = document.querySelectorAll(".btn-answer");
+
+    answerBox.addEventListener("click", function (e) {
+      e.preventDefault();
+
+      const clicked = e.target.closest(".btn-answer");
+
+      if (!clicked) return;
+
+      switch (checkSeveral) {
+        case 0:
+          if (clicked.textContent === getThis._quizApp.correctAnswer[0]) {
+            getThis._scoreCount++;
+
+            clicked.classList.add("green-correct-answer");
+            labelTimer.classList.add("show-pink-timer");
+            getThis._answerButton.forEach((btn) => {
+              btn.classList.add("disable-button");
+            });
+          } else {
+            clicked.classList.add("red-uncorrect-answer");
+            labelTimer.classList.add("show-red-timer");
+
+            getThis._answerButton.forEach((btn) => {
+              if (getThis._quizApp.correctAnswer[0] === btn.textContent)
+                btn.classList.add("disable-button__correct");
+              btn.classList.add("disable-button");
+            });
+          }
+          break;
+        case 1:
+          if (
+            getThis._quizApp._corrSevAns.includes(clicked.textContent) &&
+            !tempArr.includes(clicked.textContent)
+          ) {
+            tempArr.push(clicked.textContent);
+            clicked.classList.add("green-correct-answer");
+            if (tempArr.length == getThis._quizApp._corrSevAns.length) {
+              getThis._scoreCount++;
+            }
+          } else {
+            clicked.classList.add("red-uncorrect-answer");
+            labelTimer.classList.add("show-red-timer");
+            if (tempArr.length == getThis._quizApp._corrSevAns.length)
+              getThis._scoreCount--;
+            getThis._answerButton.forEach((btn) => {
+              if (corrSevAns.includes(btn.textContent))
+                btn.classList.add("disable-button__correct");
+              btn.classList.add("disable-button");
+            });
+          }
+          break;
+      }
+      clearInterval(timer);
+      contBtn.classList.add("continue-button_show");
+    });
+  }
+  _nextQuestions(e) {
+    e.preventDefault();
+    if (!(this._quizApp.currentQuestion == listOfQuestions.length)) {
+      document.querySelector(`section[id='active']`).remove();
+      classManagment("contBtn", "during");
+      this._setQuestions(++this._index);
+    } else {
+      index = 0;
+      yourCount.textContent = this._scoreCount;
+      totalCount.textContent = listOfQuestions.length;
+      document.querySelector(`section[id='active']`).remove();
+      clearInterval(timer);
+      classManagment("contBtn", "end");
+    }
+  }
+  _concedeQuiz(e) {
+    e.preventDefault();
+    document.querySelector(`section[id='active']`).remove();
+    if (timer) clearInterval(timer);
+    classManagment("concedeBtn");
+    this._scoreCount = 0;
+    this._index = 0;
+  }
+  _exitQuiz(e) {
+    e.preventDefault();
+    this._scoreCount = 0;
+    if (timer) clearInterval(timer);
+    classManagment("exitBtn");
+  }
+}
+
+const app = new App();
+
+function getProp() {}
 
 function startTimer() {
   let time = 10;
@@ -158,54 +229,6 @@ function startTimer() {
     time--;
   }
   return timer;
-}
-
-class Quiz {
-  constructor(number, question, correctAnswer, answers) {
-    this.number = number;
-    this.question = question;
-    this.correctAnswer = correctAnswer;
-    this.answers = answers;
-  }
-  showQuest() {
-    labelTimer.classList.add("show-timer");
-    if (timer) clearInterval(timer);
-    timer = startTimer();
-    startMenu.insertAdjacentHTML(
-      "afterbegin",
-      `
-          <section class="start-menu__text" id="active">
-            <h1>${this.question}?</h1>
-            <div class="start-menu__curr-of-total">${this.number} of ${listOfQuestions.length}</div>
-            <div class="answers-box">
-            <button class="btn-answer">${this.answers[0]}</button>
-            <button class="btn-answer">${this.answers[1]}</button>
-            <button class="btn-answer">${this.answers[2]}</button>
-            <button class="btn-answer">${this.answers[3]}</button>
-            </div>
-          </section>
-      `
-    );
-    correctAns = this.correctAnswer[0];
-    corrSevAns = this.correctAnswer;
-    currentQuestion = this.number;
-  }
-}
-
-function showQuestions(index) {
-  new Quiz(
-    listOfQuestions[index].number,
-    listOfQuestions[index].question,
-    listOfQuestions[index].correctAnswer,
-    listOfQuestions[index].answers
-  ).showQuest();
-  if (listOfQuestions[index].several == 1) {
-    noteBox.classList.add("note-box_show");
-    getProp(1);
-  } else {
-    noteBox.classList.remove("note-box_show");
-    getProp(0);
-  }
 }
 
 function changeTheme(themeNumber) {

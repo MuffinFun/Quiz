@@ -16,22 +16,20 @@ const concedeBtn = document.querySelector(".concede-button");
 const exitBtn = document.querySelector(".exit-button");
 const okBtn = document.querySelector(".ok-button");
 
-let timer;
-
 const inputViolet = document
   .querySelector("#violet")
   .addEventListener("click", () => {
-    changeTheme(0);
+    app.changeTheme(0);
   });
 const inputGreen = document
   .querySelector("#green")
   .addEventListener("click", () => {
-    changeTheme(1);
+    app.changeTheme(1);
   });
 const inputDark = document
   .querySelector("#dark")
   .addEventListener("click", () => {
-    changeTheme(2);
+    app.changeTheme(2);
   });
 
 class Quiz {
@@ -41,11 +39,10 @@ class Quiz {
     this.question = question;
     this.correctAnswer = correctAnswer;
     this.answers = answers;
+
+    this._corrSevAns = this.correctAnswer;
   }
   _showQuest() {
-    labelTimer.classList.add("show-timer");
-    if (timer) clearInterval(timer);
-    timer = startTimer();
     startMenu.insertAdjacentHTML(
       "afterbegin",
       `
@@ -62,20 +59,20 @@ class Quiz {
         `
     );
   }
-  _corrSevAns = this.correctAnswer;
 }
 
 class App {
-  _quizApp;
+  _quizClassCopy;
+  _timer;
+
   _index = 0;
   _scoreCount = 0;
 
   _answerButton;
-
   constructor() {
     startBtn.addEventListener("click", this._startQuiz.bind(this));
 
-    contBtn.addEventListener("click", this._nextQuestions.bind(this));
+    contBtn.addEventListener("click", this._contQuestions.bind(this));
 
     concedeBtn.addEventListener("click", this._concedeQuiz.bind(this));
 
@@ -87,18 +84,20 @@ class App {
   }
   _startQuiz(e) {
     e.preventDefault();
-    classManagment("startBtn");
+    this._classManager("startBtn");
     this._setQuestions(this._index);
+    this._starRestartTimer();
+    labelTimer.classList.add("show-timer");
   }
   _setQuestions(_index) {
-    this._quizApp = new Quiz(
+    this._quizClassCopy = new Quiz(
       listOfQuestions[_index].number,
       listOfQuestions[_index].question,
       listOfQuestions[_index].correctAnswer,
       listOfQuestions[_index].answers
     );
 
-    this._quizApp._showQuest();
+    this._quizClassCopy._showQuest();
 
     if (listOfQuestions[this._index].several == 1) {
       noteBox.classList.add("note-box_show");
@@ -110,7 +109,7 @@ class App {
   }
   _getAnswer(checkSeveral) {
     let tempArr = [];
-    const getThis = this;
+    const getForQuestionThis = this;
 
     const answerBox = document.querySelector(".answers-box");
 
@@ -125,20 +124,26 @@ class App {
 
       switch (checkSeveral) {
         case 0:
-          if (clicked.textContent === getThis._quizApp.correctAnswer[0]) {
-            getThis._scoreCount++;
+          if (
+            clicked.textContent ===
+            getForQuestionThis._quizClassCopy.correctAnswer[0]
+          ) {
+            getForQuestionThis._scoreCount++;
 
             clicked.classList.add("green-correct-answer");
             labelTimer.classList.add("show-pink-timer");
-            getThis._answerButton.forEach((btn) => {
+            getForQuestionThis._answerButton.forEach((btn) => {
               btn.classList.add("disable-button");
             });
           } else {
             clicked.classList.add("red-uncorrect-answer");
             labelTimer.classList.add("show-red-timer");
 
-            getThis._answerButton.forEach((btn) => {
-              if (getThis._quizApp.correctAnswer[0] === btn.textContent)
+            getForQuestionThis._answerButton.forEach((btn) => {
+              if (
+                getForQuestionThis._quizClassCopy.correctAnswer[0] ===
+                btn.textContent
+              )
                 btn.classList.add("disable-button__correct");
               btn.classList.add("disable-button");
             });
@@ -146,141 +151,166 @@ class App {
           break;
         case 1:
           if (
-            getThis._quizApp._corrSevAns.includes(clicked.textContent) &&
+            getForQuestionThis._quizClassCopy._corrSevAns.includes(
+              clicked.textContent
+            ) &&
             !tempArr.includes(clicked.textContent)
           ) {
             tempArr.push(clicked.textContent);
             clicked.classList.add("green-correct-answer");
-            if (tempArr.length == getThis._quizApp._corrSevAns.length) {
-              getThis._scoreCount++;
+            if (
+              tempArr.length ==
+              getForQuestionThis._quizClassCopy._corrSevAns.length
+            ) {
+              getForQuestionThis._scoreCount++;
             }
           } else {
             clicked.classList.add("red-uncorrect-answer");
             labelTimer.classList.add("show-red-timer");
-            if (tempArr.length == getThis._quizApp._corrSevAns.length)
-              getThis._scoreCount--;
-            getThis._answerButton.forEach((btn) => {
-              if (corrSevAns.includes(btn.textContent))
+            if (
+              tempArr.length ==
+              getForQuestionThis._quizClassCopy._corrSevAns.length
+            )
+              getForQuestionThis._scoreCount--;
+            getForQuestionThis._answerButton.forEach((btn) => {
+              if (
+                getForQuestionThis._quizClassCopy._corrSevAns.includes(
+                  btn.textContent
+                )
+              )
                 btn.classList.add("disable-button__correct");
               btn.classList.add("disable-button");
             });
           }
           break;
       }
-      clearInterval(timer);
+      clearInterval(getForQuestionThis._timer);
       contBtn.classList.add("continue-button_show");
     });
   }
-  _nextQuestions(e) {
+  _contQuestions(e) {
     e.preventDefault();
-    if (!(this._quizApp.currentQuestion == listOfQuestions.length)) {
+    if (!(this._quizClassCopy.number === listOfQuestions.length)) {
       document.querySelector(`section[id='active']`).remove();
-      classManagment("contBtn", "during");
+      this._classManager("contBtn", "during");
       this._setQuestions(++this._index);
+      this._starRestartTimer();
     } else {
-      index = 0;
+      this._index = 0;
+
       yourCount.textContent = this._scoreCount;
       totalCount.textContent = listOfQuestions.length;
+
       document.querySelector(`section[id='active']`).remove();
-      clearInterval(timer);
-      classManagment("contBtn", "end");
+      this._classManager("contBtn", "end");
+      this._starRestartTimer();
     }
   }
   _concedeQuiz(e) {
     e.preventDefault();
     document.querySelector(`section[id='active']`).remove();
-    if (timer) clearInterval(timer);
-    classManagment("concedeBtn");
+    if (this._timer) clearInterval(this._timer);
+    this._classManager("concedeBtn");
     this._scoreCount = 0;
     this._index = 0;
   }
   _exitQuiz(e) {
     e.preventDefault();
     this._scoreCount = 0;
-    if (timer) clearInterval(timer);
-    classManagment("exitBtn");
+    if (this._timer) clearInterval(this._timer);
+    this._classManager("exitBtn");
+  }
+  _questionTimer() {
+    let time = 10;
+
+    const getForTimerThis = this;
+
+    labelTimer.textContent = `${time}`;
+    labelTimer.classList.remove("show-pink-timer");
+    labelTimer.classList.remove("show-red-timer");
+
+    const timer = setInterval(tick, 1000);
+
+    function tick() {
+      labelTimer.textContent = `${time}`;
+      if (time == 0) {
+        clearInterval(timer);
+        labelTimer.classList.toggle("show-red-timer");
+        getForTimerThis._answerButton.forEach((item) => {
+          if (
+            getForTimerThis._quizClassCopy._corrSevAns.includes(
+              item.textContent
+            )
+          ) {
+            item.classList.add("disable-button__correct");
+          } else {
+            item.classList.add("disable-button");
+          }
+        });
+        contBtn.classList.add("continue-button_show");
+      }
+      time--;
+    }
+
+    return timer;
+  }
+  _starRestartTimer() {
+    if (this._timer) clearInterval(this._timer);
+    this._timer = this._questionTimer();
+  }
+  _classManager(element, moment) {
+    switch (element) {
+      case "startBtn":
+        startBtn.classList.add("start-button_deactivate");
+        startMenu.classList.add("start-menu_show-menu");
+        break;
+      case "contBtn":
+        switch (moment) {
+          case "during":
+            labelTimer.classList.add("show-timer");
+            contBtn.classList.remove("continue-button_show");
+            break;
+          case "end":
+            labelTimer.classList.remove("show-timer");
+            startMenu.classList.remove("start-menu_show-menu");
+            endMenu.classList.add("end-menu_show-menu");
+            break;
+          default:
+            alert(`something not found at: ${element.toString()} ${moment}`);
+        }
+        break;
+      case "concedeBtn":
+        labelTimer.classList.remove("show-timer");
+        startMenu.classList.remove("start-menu_show-menu");
+        startBtn.classList.remove("start-button_deactivate");
+        noteBox.classList.remove("note-box_show");
+        contBtn.classList.remove("continue-button_show");
+        break;
+      case "exitBtn":
+        labelTimer.classList.remove("show-timer");
+        endMenu.classList.remove("end-menu_show-menu");
+        startBtn.classList.remove("start-button_deactivate");
+        contBtn.classList.remove("continue-button_show");
+        break;
+      default:
+        alert(`not found case: ${element}`);
+    }
+  }
+  changeTheme(themeNumber) {
+    mainContainer.style.background = listOfThemes[themeNumber].container;
+    startMenu.style.background = listOfThemes[themeNumber].startEndMenuNoteBox;
+    endMenu.style.background = listOfThemes[themeNumber].startEndMenuNoteBox;
+    noteBox.style.background = listOfThemes[themeNumber].startEndMenuNoteBox;
+    startBtn.style.background = listOfThemes[themeNumber].startButton;
+    contBtn.style.background = listOfThemes[themeNumber].contConcedeExitOkBtn;
+    concedeBtn.style.background =
+      listOfThemes[themeNumber].contConcedeExitOkBtn;
+    exitBtn.style.background = listOfThemes[themeNumber].contConcedeExitOkBtn;
+    okBtn.style.background = listOfThemes[themeNumber].contConcedeExitOkBtn;
   }
 }
 
 const app = new App();
-
-function getProp() {}
-
-function startTimer() {
-  let time = 10;
-  labelTimer.textContent = `${time}`;
-  labelTimer.classList.remove("show-pink-timer");
-  labelTimer.classList.remove("show-red-timer");
-  const timer = setInterval(tick, 1000);
-  function tick() {
-    labelTimer.textContent = `${time}`;
-    if (time == 0) {
-      clearInterval(timer);
-      labelTimer.classList.toggle("show-red-timer");
-      answerButton.forEach((item) => {
-        if (corrSevAns.includes(item.textContent)) {
-          item.classList.add("disable-button__correct");
-        } else {
-          item.classList.add("disable-button");
-        }
-      });
-      contBtn.classList.add("continue-button_show");
-    }
-    time--;
-  }
-  return timer;
-}
-
-function changeTheme(themeNumber) {
-  mainContainer.style.background = listOfThemes[themeNumber].container;
-  startMenu.style.background = listOfThemes[themeNumber].startEndMenuNoteBox;
-  endMenu.style.background = listOfThemes[themeNumber].startEndMenuNoteBox;
-  noteBox.style.background = listOfThemes[themeNumber].startEndMenuNoteBox;
-  startBtn.style.background = listOfThemes[themeNumber].startButton;
-  contBtn.style.background = listOfThemes[themeNumber].contConcedeExitOkBtn;
-  concedeBtn.style.background = listOfThemes[themeNumber].contConcedeExitOkBtn;
-  exitBtn.style.background = listOfThemes[themeNumber].contConcedeExitOkBtn;
-  okBtn.style.background = listOfThemes[themeNumber].contConcedeExitOkBtn;
-}
-
-function classManagment(element, moment) {
-  switch (element) {
-    case "startBtn":
-      startBtn.classList.add("start-button_deactivate");
-      startMenu.classList.add("start-menu_show-menu");
-      break;
-    case "contBtn":
-      switch (moment) {
-        case "during":
-          labelTimer.classList.add("show-timer");
-          contBtn.classList.remove("continue-button_show");
-          break;
-        case "end":
-          labelTimer.classList.remove("show-timer");
-          startMenu.classList.remove("start-menu_show-menu");
-          endMenu.classList.add("end-menu_show-menu");
-          break;
-        default:
-          alert(`something not found at: ${element.toString()} ${moment}`);
-      }
-      break;
-    case "concedeBtn":
-      labelTimer.classList.remove("show-timer");
-      startMenu.classList.remove("start-menu_show-menu");
-      startBtn.classList.remove("start-button_deactivate");
-      noteBox.classList.remove("note-box_show");
-      contBtn.classList.remove("continue-button_show");
-      break;
-    case "exitBtn":
-      labelTimer.classList.remove("show-timer");
-      endMenu.classList.remove("end-menu_show-menu");
-      startBtn.classList.remove("start-button_deactivate");
-      contBtn.classList.remove("continue-button_show");
-      break;
-    default:
-      alert(`not found case: ${element}`);
-  }
-}
 
 const listOfQuestions = [
   {
@@ -431,4 +461,4 @@ const listOfThemes = [
   },
 ];
 
-document.addEventListener("DOMContentLoaded", changeTheme(0));
+document.addEventListener("DOMContentLoaded", app.changeTheme(0));

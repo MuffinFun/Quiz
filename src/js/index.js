@@ -16,248 +16,301 @@ const concedeBtn = document.querySelector(".concede-button");
 const exitBtn = document.querySelector(".exit-button");
 const okBtn = document.querySelector(".ok-button");
 
-let answerButton;
-let timer;
-
-let correctAns;
-let corrSevAns;
-let currentQuestion;
-
-let scoreCount = 0;
-let index = 0;
-
 const inputViolet = document
   .querySelector("#violet")
   .addEventListener("click", () => {
-    changeTheme(0);
+    app.changeTheme(0);
   });
 const inputGreen = document
   .querySelector("#green")
   .addEventListener("click", () => {
-    changeTheme(1);
+    app.changeTheme(1);
   });
 const inputDark = document
   .querySelector("#dark")
   .addEventListener("click", () => {
-    changeTheme(2);
+    app.changeTheme(2);
   });
-
-startBtn.addEventListener("click", () => {
-  classManagment("startBtn");
-  showQuestions(index);
-});
-
-contBtn.addEventListener("click", () => {
-  if (!(currentQuestion == listOfQuestions.length)) {
-    document.querySelector(`section[id='active']`).remove();
-    classManagment("contBtn", "during");
-    showQuestions(++index);
-  } else {
-    index = 0;
-    yourCount.textContent = scoreCount;
-    totalCount.textContent = listOfQuestions.length;
-    document.querySelector(`section[id='active']`).remove();
-    clearInterval(timer);
-    classManagment("contBtn", "end");
-  }
-});
-
-concedeBtn.addEventListener("click", () => {
-  document.querySelector(`section[id='active']`).remove();
-  if (timer) clearInterval(timer);
-  classManagment("concedeBtn");
-  scoreCount = 0;
-  index = 0;
-});
-
-exitBtn.addEventListener("click", () => {
-  scoreCount = 0;
-  if (timer) clearInterval(timer);
-  classManagment("exitBtn");
-});
-
-okBtn.addEventListener("click", () => {
-  noteBox.classList.toggle("note-box_show");
-});
-
-function getProp(checkSeveral) {
-  let tempArr = [];
-  const answerBox = document.querySelector(".answers-box");
-  answerButton = document.querySelectorAll(".btn-answer");
-
-  answerBox.addEventListener("click", function (e) {
-    e.preventDefault();
-    const clicked = e.target.closest(".btn-answer");
-    if (!clicked) return;
-    switch (checkSeveral) {
-      case 0:
-        if (clicked.textContent === correctAns) {
-          scoreCount++;
-          clicked.classList.add("green-correct-answer");
-          labelTimer.classList.add("show-pink-timer");
-          answerButton.forEach((btn) => {
-            btn.classList.add("disable-button");
-          });
-        } else {
-          clicked.classList.add("red-uncorrect-answer");
-          labelTimer.classList.add("show-red-timer");
-          answerButton.forEach((btn) => {
-            if (correctAns === btn.textContent)
-              btn.classList.add("disable-button__correct");
-            btn.classList.add("disable-button");
-          });
-        }
-        break;
-      case 1:
-        if (
-          corrSevAns.includes(clicked.textContent) &&
-          !tempArr.includes(clicked.textContent)
-        ) {
-          tempArr.push(clicked.textContent);
-          clicked.classList.add("green-correct-answer");
-          if (tempArr.length == corrSevAns.length) {
-            scoreCount++;
-          }
-        } else {
-          clicked.classList.add("red-uncorrect-answer");
-          labelTimer.classList.add("show-red-timer");
-          if (tempArr.length == corrSevAns.length) scoreCount--;
-          answerButton.forEach((btn) => {
-            if (corrSevAns.includes(btn.textContent))
-              btn.classList.add("disable-button__correct");
-            btn.classList.add("disable-button");
-          });
-        }
-        break;
-    }
-    clearInterval(timer);
-    contBtn.classList.add("continue-button_show");
-  });
-}
-
-function startTimer() {
-  let time = 10;
-  labelTimer.textContent = `${time}`;
-  labelTimer.classList.remove("show-pink-timer");
-  labelTimer.classList.remove("show-red-timer");
-  const timer = setInterval(tick, 1000);
-  function tick() {
-    labelTimer.textContent = `${time}`;
-    if (time == 0) {
-      clearInterval(timer);
-      labelTimer.classList.toggle("show-red-timer");
-      answerButton.forEach((item) => {
-        if (corrSevAns.includes(item.textContent)) {
-          item.classList.add("disable-button__correct");
-        } else {
-          item.classList.add("disable-button");
-        }
-      });
-      contBtn.classList.add("continue-button_show");
-    }
-    time--;
-  }
-  return timer;
-}
 
 class Quiz {
+  _corrSevAns;
   constructor(number, question, correctAnswer, answers) {
     this.number = number;
     this.question = question;
     this.correctAnswer = correctAnswer;
     this.answers = answers;
+
+    this._corrSevAns = this.correctAnswer;
   }
-  showQuest() {
-    labelTimer.classList.add("show-timer");
-    if (timer) clearInterval(timer);
-    timer = startTimer();
+  _showQuest() {
     startMenu.insertAdjacentHTML(
       "afterbegin",
       `
-          <section class="start-menu__text" id="active">
-            <h1>${this.question}?</h1>
-            <div class="start-menu__curr-of-total">${this.number} of ${listOfQuestions.length}</div>
-            <div class="answers-box">
-            <button class="btn-answer">${this.answers[0]}</button>
-            <button class="btn-answer">${this.answers[1]}</button>
-            <button class="btn-answer">${this.answers[2]}</button>
-            <button class="btn-answer">${this.answers[3]}</button>
-            </div>
-          </section>
-      `
+            <section class="start-menu__text" id="active">
+              <h1>${this.question}?</h1>
+              <div class="start-menu__curr-of-total">${this.number} of ${listOfQuestions.length}</div>
+              <div class="answers-box">
+              <button class="btn-answer">${this.answers[0]}</button>
+              <button class="btn-answer">${this.answers[1]}</button>
+              <button class="btn-answer">${this.answers[2]}</button>
+              <button class="btn-answer">${this.answers[3]}</button>
+              </div>
+            </section>
+        `
     );
-    correctAns = this.correctAnswer[0];
-    corrSevAns = this.correctAnswer;
-    currentQuestion = this.number;
   }
 }
 
-function showQuestions(index) {
-  new Quiz(
-    listOfQuestions[index].number,
-    listOfQuestions[index].question,
-    listOfQuestions[index].correctAnswer,
-    listOfQuestions[index].answers
-  ).showQuest();
-  if (listOfQuestions[index].several == 1) {
-    noteBox.classList.add("note-box_show");
-    getProp(1);
-  } else {
-    noteBox.classList.remove("note-box_show");
-    getProp(0);
+class App {
+  _quizClassCopy;
+  _timer;
+
+  _index = 0;
+  _scoreCount = 0;
+
+  _answerButton;
+  constructor() {
+    startBtn.addEventListener("click", this._startQuiz.bind(this));
+
+    contBtn.addEventListener("click", this._contQuestions.bind(this));
+
+    concedeBtn.addEventListener("click", this._concedeQuiz.bind(this));
+
+    exitBtn.addEventListener("click", this._exitQuiz.bind(this));
+
+    okBtn.addEventListener("click", () => {
+      noteBox.classList.toggle("note-box_show");
+    });
   }
-}
+  _startQuiz(e) {
+    e.preventDefault();
+    this._classManager("startBtn");
+    this._setQuestions(this._index);
+    this._starRestartTimer();
+    labelTimer.classList.add("show-timer");
+  }
+  _setQuestions(_index) {
+    this._quizClassCopy = new Quiz(
+      listOfQuestions[_index].number,
+      listOfQuestions[_index].question,
+      listOfQuestions[_index].correctAnswer,
+      listOfQuestions[_index].answers
+    );
 
-function changeTheme(themeNumber) {
-  mainContainer.style.background = listOfThemes[themeNumber].container;
-  startMenu.style.background = listOfThemes[themeNumber].startEndMenuNoteBox;
-  endMenu.style.background = listOfThemes[themeNumber].startEndMenuNoteBox;
-  noteBox.style.background = listOfThemes[themeNumber].startEndMenuNoteBox;
-  startBtn.style.background = listOfThemes[themeNumber].startButton;
-  contBtn.style.background = listOfThemes[themeNumber].contConcedeExitOkBtn;
-  concedeBtn.style.background = listOfThemes[themeNumber].contConcedeExitOkBtn;
-  exitBtn.style.background = listOfThemes[themeNumber].contConcedeExitOkBtn;
-  okBtn.style.background = listOfThemes[themeNumber].contConcedeExitOkBtn;
-}
+    this._quizClassCopy._showQuest();
 
-function classManagment(element, moment) {
-  switch (element) {
-    case "startBtn":
-      startBtn.classList.add("start-button_deactivate");
-      startMenu.classList.add("start-menu_show-menu");
-      break;
-    case "contBtn":
-      switch (moment) {
-        case "during":
-          labelTimer.classList.add("show-timer");
-          contBtn.classList.remove("continue-button_show");
-          break;
-        case "end":
-          labelTimer.classList.remove("show-timer");
-          startMenu.classList.remove("start-menu_show-menu");
-          endMenu.classList.add("end-menu_show-menu");
-          break;
-        default:
-          alert(`something not found at: ${element.toString()} ${moment}`);
-      }
-      break;
-    case "concedeBtn":
-      labelTimer.classList.remove("show-timer");
-      startMenu.classList.remove("start-menu_show-menu");
-      startBtn.classList.remove("start-button_deactivate");
+    if (listOfQuestions[this._index].several == 1) {
+      noteBox.classList.add("note-box_show");
+      this._getAnswer(1);
+    } else {
       noteBox.classList.remove("note-box_show");
-      contBtn.classList.remove("continue-button_show");
-      break;
-    case "exitBtn":
-      labelTimer.classList.remove("show-timer");
-      endMenu.classList.remove("end-menu_show-menu");
-      startBtn.classList.remove("start-button_deactivate");
-      contBtn.classList.remove("continue-button_show");
-      break;
-    default:
-      alert(`not found case: ${element}`);
+      this._getAnswer(0);
+    }
+  }
+  _getAnswer(checkSeveral) {
+    let tempArr = [];
+    const getForQuestionThis = this;
+
+    const answerBox = document.querySelector(".answers-box");
+
+    this._answerButton = document.querySelectorAll(".btn-answer");
+
+    answerBox.addEventListener("click", function (e) {
+      e.preventDefault();
+
+      const clicked = e.target.closest(".btn-answer");
+
+      if (!clicked) return;
+
+      switch (checkSeveral) {
+        case 0:
+          if (
+            clicked.textContent ===
+            getForQuestionThis._quizClassCopy.correctAnswer[0]
+          ) {
+            getForQuestionThis._scoreCount++;
+
+            clicked.classList.add("green-correct-answer");
+            labelTimer.classList.add("show-pink-timer");
+            getForQuestionThis._answerButton.forEach((btn) => {
+              btn.classList.add("disable-button");
+            });
+          } else {
+            clicked.classList.add("red-uncorrect-answer");
+            labelTimer.classList.add("show-red-timer");
+
+            getForQuestionThis._answerButton.forEach((btn) => {
+              if (
+                getForQuestionThis._quizClassCopy.correctAnswer[0] ===
+                btn.textContent
+              )
+                btn.classList.add("disable-button__correct");
+              btn.classList.add("disable-button");
+            });
+          }
+          break;
+        case 1:
+          if (
+            getForQuestionThis._quizClassCopy._corrSevAns.includes(
+              clicked.textContent
+            ) &&
+            !tempArr.includes(clicked.textContent)
+          ) {
+            tempArr.push(clicked.textContent);
+            clicked.classList.add("green-correct-answer");
+            if (
+              tempArr.length ==
+              getForQuestionThis._quizClassCopy._corrSevAns.length
+            ) {
+              getForQuestionThis._scoreCount++;
+            }
+          } else {
+            clicked.classList.add("red-uncorrect-answer");
+            labelTimer.classList.add("show-red-timer");
+            if (
+              tempArr.length ==
+              getForQuestionThis._quizClassCopy._corrSevAns.length
+            )
+              getForQuestionThis._scoreCount--;
+            getForQuestionThis._answerButton.forEach((btn) => {
+              if (
+                getForQuestionThis._quizClassCopy._corrSevAns.includes(
+                  btn.textContent
+                )
+              )
+                btn.classList.add("disable-button__correct");
+              btn.classList.add("disable-button");
+            });
+          }
+          break;
+      }
+      clearInterval(getForQuestionThis._timer);
+      contBtn.classList.add("continue-button_show");
+    });
+  }
+  _contQuestions(e) {
+    e.preventDefault();
+    if (!(this._quizClassCopy.number === listOfQuestions.length)) {
+      document.querySelector(`section[id='active']`).remove();
+      this._classManager("contBtn", "during");
+      this._setQuestions(++this._index);
+      this._starRestartTimer();
+    } else {
+      this._index = 0;
+
+      yourCount.textContent = this._scoreCount;
+      totalCount.textContent = listOfQuestions.length;
+
+      document.querySelector(`section[id='active']`).remove();
+      this._classManager("contBtn", "end");
+      this._starRestartTimer();
+    }
+  }
+  _concedeQuiz(e) {
+    e.preventDefault();
+    document.querySelector(`section[id='active']`).remove();
+    if (this._timer) clearInterval(this._timer);
+    this._classManager("concedeBtn");
+    this._scoreCount = 0;
+    this._index = 0;
+  }
+  _exitQuiz(e) {
+    e.preventDefault();
+    this._scoreCount = 0;
+    if (this._timer) clearInterval(this._timer);
+    this._classManager("exitBtn");
+  }
+  _questionTimer() {
+    let time = 10;
+
+    const getForTimerThis = this;
+
+    labelTimer.textContent = `${time}`;
+    labelTimer.classList.remove("show-pink-timer");
+    labelTimer.classList.remove("show-red-timer");
+
+    const timer = setInterval(tick, 1000);
+
+    function tick() {
+      labelTimer.textContent = `${time}`;
+      if (time == 0) {
+        clearInterval(timer);
+        labelTimer.classList.toggle("show-red-timer");
+        getForTimerThis._answerButton.forEach((item) => {
+          if (
+            getForTimerThis._quizClassCopy._corrSevAns.includes(
+              item.textContent
+            )
+          ) {
+            item.classList.add("disable-button__correct");
+          } else {
+            item.classList.add("disable-button");
+          }
+        });
+        contBtn.classList.add("continue-button_show");
+      }
+      time--;
+    }
+
+    return timer;
+  }
+  _starRestartTimer() {
+    if (this._timer) clearInterval(this._timer);
+    this._timer = this._questionTimer();
+  }
+  _classManager(element, moment) {
+    switch (element) {
+      case "startBtn":
+        startBtn.classList.add("start-button_deactivate");
+        startMenu.classList.add("start-menu_show-menu");
+        break;
+      case "contBtn":
+        switch (moment) {
+          case "during":
+            labelTimer.classList.add("show-timer");
+            contBtn.classList.remove("continue-button_show");
+            break;
+          case "end":
+            labelTimer.classList.remove("show-timer");
+            startMenu.classList.remove("start-menu_show-menu");
+            endMenu.classList.add("end-menu_show-menu");
+            break;
+          default:
+            alert(`something not found at: ${element.toString()} ${moment}`);
+        }
+        break;
+      case "concedeBtn":
+        labelTimer.classList.remove("show-timer");
+        startMenu.classList.remove("start-menu_show-menu");
+        startBtn.classList.remove("start-button_deactivate");
+        noteBox.classList.remove("note-box_show");
+        contBtn.classList.remove("continue-button_show");
+        break;
+      case "exitBtn":
+        labelTimer.classList.remove("show-timer");
+        endMenu.classList.remove("end-menu_show-menu");
+        startBtn.classList.remove("start-button_deactivate");
+        contBtn.classList.remove("continue-button_show");
+        break;
+      default:
+        alert(`not found case: ${element}`);
+    }
+  }
+  changeTheme(themeNumber) {
+    mainContainer.style.background = listOfThemes[themeNumber].container;
+    startMenu.style.background = listOfThemes[themeNumber].startEndMenuNoteBox;
+    endMenu.style.background = listOfThemes[themeNumber].startEndMenuNoteBox;
+    noteBox.style.background = listOfThemes[themeNumber].startEndMenuNoteBox;
+    startBtn.style.background = listOfThemes[themeNumber].startButton;
+    contBtn.style.background = listOfThemes[themeNumber].contConcedeExitOkBtn;
+    concedeBtn.style.background =
+      listOfThemes[themeNumber].contConcedeExitOkBtn;
+    exitBtn.style.background = listOfThemes[themeNumber].contConcedeExitOkBtn;
+    okBtn.style.background = listOfThemes[themeNumber].contConcedeExitOkBtn;
   }
 }
+
+const app = new App();
 
 const listOfQuestions = [
   {
@@ -408,4 +461,4 @@ const listOfThemes = [
   },
 ];
 
-document.addEventListener("DOMContentLoaded", changeTheme(0));
+document.addEventListener("DOMContentLoaded", app.changeTheme(0));

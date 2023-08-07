@@ -33,7 +33,6 @@ const inputDark = document
   });
 
 class Quiz {
-  _corrSevAns;
   constructor(number, question, correctAnswer, answers) {
     this.number = number;
     this.question = question;
@@ -62,13 +61,14 @@ class Quiz {
 }
 
 class App {
-  _quizClassCopy;
+  _quizClassInstance;
   _timer;
 
   _index = 0;
   _scoreCount = 0;
 
   _answerButton;
+  _answerTempArray = [];
   constructor() {
     startBtn.addEventListener("click", this._startQuiz.bind(this));
 
@@ -90,14 +90,14 @@ class App {
     labelTimer.classList.add("show-timer");
   }
   _setQuestions(_index) {
-    this._quizClassCopy = new Quiz(
+    this._quizClassInstance = new Quiz(
       listOfQuestions[_index].number,
       listOfQuestions[_index].question,
       listOfQuestions[_index].correctAnswer,
       listOfQuestions[_index].answers
     );
 
-    this._quizClassCopy._showQuest();
+    this._quizClassInstance._showQuest();
 
     if (listOfQuestions[this._index].several == 1) {
       noteBox.classList.add("note-box_show");
@@ -107,9 +107,8 @@ class App {
       this._getAnswer(0);
     }
   }
-  _getAnswer(checkSeveral) {
-    let tempArr = [];
-    const getForQuestionThis = this;
+  _getAnswer() {
+    const getThis = this;
 
     const answerBox = document.querySelector(".answers-box");
 
@@ -122,75 +121,44 @@ class App {
 
       if (!clicked) return;
 
-      switch (checkSeveral) {
-        case 0:
-          if (
-            clicked.textContent ===
-            getForQuestionThis._quizClassCopy.correctAnswer[0]
-          ) {
-            getForQuestionThis._scoreCount++;
+      getThis._checkAnswer(
+        clicked,
+        clicked.textContent,
+        getThis._quizClassInstance.correctAnswer
+      );
 
-            clicked.classList.add("green-correct-answer");
-            labelTimer.classList.add("show-pink-timer");
-            getForQuestionThis._answerButton.forEach((btn) => {
-              btn.classList.add("disable-button");
-            });
-          } else {
-            clicked.classList.add("red-uncorrect-answer");
-            labelTimer.classList.add("show-red-timer");
-
-            getForQuestionThis._answerButton.forEach((btn) => {
-              if (
-                getForQuestionThis._quizClassCopy.correctAnswer[0] ===
-                btn.textContent
-              )
-                btn.classList.add("disable-button__correct");
-              btn.classList.add("disable-button");
-            });
-          }
-          break;
-        case 1:
-          if (
-            getForQuestionThis._quizClassCopy._corrSevAns.includes(
-              clicked.textContent
-            ) &&
-            !tempArr.includes(clicked.textContent)
-          ) {
-            tempArr.push(clicked.textContent);
-            clicked.classList.add("green-correct-answer");
-            if (
-              tempArr.length ==
-              getForQuestionThis._quizClassCopy._corrSevAns.length
-            ) {
-              getForQuestionThis._scoreCount++;
-            }
-          } else {
-            clicked.classList.add("red-uncorrect-answer");
-            labelTimer.classList.add("show-red-timer");
-            if (
-              tempArr.length ==
-              getForQuestionThis._quizClassCopy._corrSevAns.length
-            )
-              getForQuestionThis._scoreCount--;
-            getForQuestionThis._answerButton.forEach((btn) => {
-              if (
-                getForQuestionThis._quizClassCopy._corrSevAns.includes(
-                  btn.textContent
-                )
-              )
-                btn.classList.add("disable-button__correct");
-              btn.classList.add("disable-button");
-            });
-          }
-          break;
-      }
-      clearInterval(getForQuestionThis._timer);
       contBtn.classList.add("continue-button_show");
     });
   }
+  _checkAnswer(element, textContent, correctAnswers) {
+    this._answerTempArray.push(textContent);
+
+    if (correctAnswers.includes(textContent)) {
+      if (this._answerTempArray.length == correctAnswers.length) {
+        this._scoreCount += 1;
+      }
+      element.classList.add("green-correct-answer");
+    } else {
+      if (this._answerTempArray.length > correctAnswers.length) {
+        console.log("ep");
+        this._scoreCount -= 1;
+      }
+      element.classList.add("red-uncorrect-answer");
+      labelTimer.classList.add("show-red-timer");
+
+      this._answerButton.forEach((btn) => {
+        if (correctAnswers.includes(btn.textContent))
+          btn.classList.add("gray-button__correct");
+        btn.classList.add("disable-button");
+      });
+
+      clearInterval(this._timer);
+    }
+  }
   _contQuestions(e) {
     e.preventDefault();
-    if (!(this._quizClassCopy.number === listOfQuestions.length)) {
+    if (!(this._quizClassInstance.number === listOfQuestions.length)) {
+      this._answerTempArray = [];
       document.querySelector(`section[id='active']`).remove();
       this._classManager("contBtn", "during");
       this._setQuestions(++this._index);
@@ -238,11 +206,11 @@ class App {
         labelTimer.classList.toggle("show-red-timer");
         getForTimerThis._answerButton.forEach((item) => {
           if (
-            getForTimerThis._quizClassCopy._corrSevAns.includes(
+            getForTimerThis._quizClassInstance._corrSevAns.includes(
               item.textContent
             )
           ) {
-            item.classList.add("disable-button__correct");
+            item.classList.add("gray-button__correct");
           } else {
             item.classList.add("disable-button");
           }

@@ -4,7 +4,6 @@
   --color-total-lightGreen: rgb(10, 235, 10);
   --color-text: rgb(255, 255, 255);
   --color-correct-answer: rgb(0, 128, 0);
-  --color-pink-timer: rgb(255, 0, 132);
   --color-uncorrect-answer: rgb(255, 0, 0);
   --color-show-correct-answer: rgb(128, 128, 128);
   --color-ans-button: rgba(121, 79, 159, 0.251);
@@ -268,9 +267,6 @@ input:checked {
 .show-red-timer {
   color: var(--color-uncorrect-answer);
 }
-.show-pink-timer {
-  color: var(--color-pink-timer);
-}
 
 .start-button_deactivate {
   opacity: 0;
@@ -300,9 +296,8 @@ input:checked {
 .disable-button {
   pointer-events: none;
 }
-.disable-button__correct {
+.gray-button__correct {
   background-color: var(--color-show-correct-answer);
-  pointer-events: none;
 }
 
 @media (max-width: 780px) {
